@@ -65,5 +65,53 @@
       "Gap": 3
     },
     "note": "Built from real stills: lemonade full 0-3s, gap_row 3-6s, 10fps, single-shelf ROI"
+  },
+  "pexels_empty_shelves": {
+    "video": "pexels_empty_shelves",
+    "path": "results/video_input_pexels/pexels_supermarket_empty_shelves_cityxcape_3929080.mp4",
+    "fps": 29.97002997002997,
+    "total_frames": 380,
+    "width": 1920,
+    "height": 1080,
+    "sample_fps": 1.0,
+    "sampled_frames": 13,
+    "cross_baseline": null,
+    "states": {
+      "Full": 1,
+      "Check shelf": 12
+    },
+    "mean_detections": 0.69,
+    "mean_latency_ms": 560.9,
+    "mean_changed_ratio": 0.4868,
+    "max_unique_seen": 8,
+    "frames_with_persisted_track": 0,
+    "source": "Pexels, Supermarket Empty Shelves, CityXcape, https://www.pexels.com/video/supermarket-empty-shelves-3929080/",
+    "licence": "Pexels License: Free",
+    "camera_type": "moving camera (verified by frames + phase response)",
+    "note": "Baseline = frame 0 of same video, default ROI, 1 fps sampling. No ground truth counts claimed."
+  },
+  "pexels_beer_packs": {
+    "video": "pexels_beer_packs",
+    "path": "results/video_input_pexels/pexels_beer_packs_gondola_shelves_dyon_siregar_11598349.mp4",
+    "fps": 24.0,
+    "total_frames": 300,
+    "width": 1920,
+    "height": 1080,
+    "sample_fps": 1.0,
+    "sampled_frames": 13,
+    "cross_baseline": null,
+    "states": {
+      "Full": 1,
+      "Check shelf": 12
+    },
+    "mean_detections": 2.62,
+    "mean_latency_ms": 561.9,
+    "mean_changed_ratio": 0.7045,
+    "max_unique_seen": 30,
+    "frames_with_persisted_track": 1,
+    "source": "Pexels, Close up of Beer Packs on Gondola Shelves, Dyon Siregar, https://www.pexels.com/video/close-up-of-beer-packs-on-gondola-shelves-11598349/",
+    "licence": "Pexels License: Free",
+    "camera_type": "moving camera (verified by frames + phase response)",
+    "note": "Baseline = frame 0 of same video, default ROI, 1 fps sampling. No ground truth counts claimed."
   }
 }

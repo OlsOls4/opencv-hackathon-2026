@@ -31,21 +31,14 @@ single fixed shelf, and the Getty watermark is visible. covid_empty_
 shelves is a shaky handheld pan over genuinely near-empty shelves
 (one bottle, a few tubs, mostly bare shelves).
 
-**Pexels free-licence gap — browser download still required:**
-Two Pexels videos with "License: Free" shown on their pages were
-identified but their file bytes were NOT obtained by this subagent:
-a Pexels video-page download fetch failed in the browser tool, and
-that request was not retried through another tool. Candidates, for a
-parent browser task to download and re-run with
-`scripts/evaluate_video.py`:
-- "Supermarket Empty Shelves", CityXcape, 1920×1080, 0:13, 29.97 fps,
-  "A close-up view of empty grocery shelves in a supermarket with few
-  products left." — https://www.pexels.com/video/supermarket-empty-shelves-3929080/
-- "Close up of Beer Packs on Gondola Shelves", Dyon Siregar,
-  1920×1080, 0:13, "Close-up of various beer packs and bottles on
-  store shelves." — https://www.pexels.com/video/close-up-of-beer-packs-on-gondola-shelves-11598349/
-- Also noted: "Colorful Snack Aisle in a Convenience Store",
-  LayG Traveller, 3840×2160, 0:04 — https://www.pexels.com/video/colorful-snack-aisle-in-a-convenience-store-28671127/
+**Pexels free-licence gap — CLOSED 26 Oct 2026:**
+The two Pexels videos below were subsequently downloaded by a parent
+browser task and re-run with `scripts/evaluate_video.py` (see §7).
+They are free-licence, unlike the Getty/Covid videos above, but they
+are still moving-camera footage, so the same Check-shelf conclusion
+applies. Also noted, not yet downloaded: "Colorful Snack Aisle in a
+Convenience Store", LayG Traveller, 3840×2160, 0:04 —
+https://www.pexels.com/video/colorful-snack-aisle-in-a-convenience-store-28671127/
 Do NOT present the two evaluated videos above as Pexels free-licence
 videos. They are not.
 
@@ -166,8 +159,9 @@ pipeline, not a separate prototype.
 
 ## 6. Files
 
-- `results/video_input_eval.csv` — 44 per-frame rows.
-- `results/video_input_eval.json` — per-video summaries.
+- `results/video_input_eval.csv` — 70 per-frame rows (44 earlier + 26 Pexels).
+- `results/video_input_eval.json` — per-video summaries, now including
+  `pexels_empty_shelves` and `pexels_beer_packs`.
 - `results/video_input_eval.md` — this file.
 - `scripts/evaluate_video.py` — reusable video evaluator.
 - `results/video_input/getty_aisle.mp4`, `covid_empty_shelves.mp4`,
@@ -176,3 +170,86 @@ pipeline, not a separate prototype.
 - Code changed: `app/inference.py`, `tests/test_inference.py`.
   Nothing pushed to GitHub, no new demo video made, nothing
   submitted to Devpost, nothing deployed.
+
+## 7. Pexels free-licence videos — evaluated 26 Oct 2026 (new)
+
+Method, identical to §2: `scripts/evaluate_video.py`, baseline =
+frame 0 of the same video, default ROI (0.05, 0.10, 0.95, 0.90),
+Detector.detect() (1920 px → 2×2 tiled), Tracker(max_missed=5),
+occupancy_state() per frame, sampling 1 fps. Baseline-from-frame-0
+measures camera/scene change within that video, NOT a stock change
+on one fixed shelf. No ground truth counts are claimed for either
+video — detection counts below are observed counts only.
+
+Files (local only, in `results/video_input_pexels/`, do NOT push
+videos to GitHub):
+- `pexels_supermarket_empty_shelves_cityxcape_3929080.mp4` —
+  "Supermarket Empty Shelves", CityXcape, Pexels License: Free,
+  https://www.pexels.com/video/supermarket-empty-shelves-3929080/
+  — 12.69 s, 1920×1080, 29.97 fps, 380 frames, 7.7 MB.
+- `pexels_beer_packs_gondola_shelves_dyon_siregar_11598349.mp4` —
+  "Close up of Beer Packs on Gondola Shelves", Dyon Siregar, Pexels
+  License: Free,
+  https://www.pexels.com/video/close-up-of-beer-packs-on-gondola-shelves-11598349/
+  — 12.50 s, 1920×1080, 24 fps, 300 frames, 8.9 MB.
+- Sampled annotated frames: `results/video_input_pexels_frames/`
+  (26 frames, local only).
+
+### Results
+
+| Video | Camera type | States (13 sampled frames) | Mean detections | Mean latency | Unique track IDs | Persisted frames |
+|---|---|---|---|---|---|---|
+| pexels_empty_shelves | Moving — pan to a different bay | Full 1, Check shelf 12 | 0.69/frame | 560.9 ms | 8 | 0/13 |
+| pexels_beer_packs | Moving — horizontal pan across gondola | Full 1, Check shelf 12 | 2.62/frame | 561.9 ms | 30 | 1/13 |
+
+Phase-correlation response, post-baseline frames (guard < 0.10 →
+Check shelf):
+- Empty shelves: 0.0039–0.0196, mean 0.0125. Changed_ratio
+  0.2169–0.7094, mean 0.5273 (post-baseline). Without the guard
+  this would have been a false Gap/Low on every post-baseline
+  frame; with the guard it is correctly Check shelf on all 12.
+- Beer packs: −0.0078–0.0539, mean 0.0033. Changed_ratio
+  0.5821–0.8391, mean 0.7632 (post-baseline). Same conclusion:
+  Check shelf on all 12 post-baseline frames.
+
+Camera-shift estimates confirm movement, not a fixed camera:
+empty shelves shows large vertical shifts (e.g. −400 to +375 px
+between sampled frames); beer packs shows large horizontal shifts
+(e.g. −825 to +808 px). Visual frame check agrees: empty shelves
+frame 0 is a wide empty bay, frame at 6 s is a different bay with
+a few jars/bottles; beer packs frame 0 is a close-up of Taiwan
+beer packs, frame at 6 s is beer bottles in a fridge section.
+
+Detections, observed only:
+- Empty shelves: mostly 0–1/frame, total 9 over 13 frames:
+  bottle 7, bus 1, oven 1 (see CSV). The near-empty shelves genuinely
+  contain almost nothing detectable, so 0–1 is expected, not a
+  counting failure on this video.
+- Beer packs: total 34 over 13 frames, peaking at 8 at t = 5 s
+  (bottle 6, wine glass 1, refrigerator 1). Bottles are detected
+  when the pan pauses on them (t = 5–8 s: bottle 6, 4, 2, 3),
+  but labels are still COCO-generic: beer packs become
+  "refrigerator", "donut", "cake", "vase", "clock", "wine glass"
+  as the camera moves. No per-frame ground truth, so no MAE is
+  claimed.
+- Tracker persistence is 0/13 (empty) and 1/13 (beer), same cause
+  as §3: 1 fps sampling + moving camera + sparse/generic
+  detections, so boxes do not overlap at IoU > 0.3 across samples.
+  This is not a tracker-code failure on its own.
+
+### Verdict for the Pexels videos
+
+**The system works on these free videos exactly as designed for
+its fixed-camera deployment: it runs end-to-end, and it correctly
+refuses to claim a stock change on moving-camera footage.**
+Both videos are moving-camera, so neither can prove a Full → Gap
+stock change, and neither is a substitute for a fixed shop camera.
+What they do add over the Getty/Covid videos is free-licence,
+1080p, real shelf content (genuinely empty shelves, and real beer
+packs/bottles) — usable as honest demo/evaluation footage with
+their Pexels licences, unlike the Getty preview and the
+unlicenced Covid clip. They do NOT change the §5 limits: no real
+physical removal on video, no fixed shop camera footage, no video
+counting accuracy claimed, latency ~561 ms at 2×2 tiled 1080p
+would not sustain a 300 ms dashboard rate without downscaling,
+and the camera-move guard margin remains narrow (see §4).
