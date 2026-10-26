@@ -34,7 +34,18 @@ packaged goods.
 **Restock flow:** 1) Restock the shelf fully. 2) Click
 "Capture baseline (full shelf) — use after restocking" with the webcam
 running. 3) The state should return to Full. There is no separate
-restock button — re-baselining is the restock confirmation.
+restock button — re-baselining is the restock confirmation, and it
+also clears any active in-dashboard alert.
+
+**Alerts (in-dashboard only):** a Gap or Low state sustained for 5
+consecutive processed frames records an alert, shown as a banner in
+the dashboard (state + time, dismissable) and exported via
+`/api/export.csv` (alert column) and `/api/session` (`active_alert` /
+`alerts`). A single Gap/Low frame does not alert, and a single
+`/api/demo` call (one frame) does not alert on its own. No SMS, email,
+push, or sound notification is sent. An alert clears when the state
+returns to Full, on re-baseline, on dashboard dismiss (suppressed for
+that Gap/Low run), or on session reset.
 
 **Note on /api/demo:** the local app and the Lambda demo return
 different demo results by design. Locally, /api/demo shows the synthetic
@@ -68,10 +79,25 @@ Tiled mode is stills-only: high-resolution tiled inference takes
 
 Endpoints: `GET /health`, `GET /`, `POST /api/frame`, `POST /api/upload`,
 `POST /api/baseline`, `POST /api/snapshot`, `GET /api/demo`,
-`GET /api/session`, `POST /api/session/reset`, `GET /api/export.csv`.
+`GET /api/session`, `POST /api/session/reset`, `GET /api/export.csv`,
+`GET /api/alerts`, `POST /api/alerts/dismiss`.
 `/health` is a liveness check only — it reports the local OpenCV
 version and whether a detector has been loaded, it does not prove a
 successful inference until /api/demo also succeeds.
+
+## Lambda demo code (reproducibility)
+
+`lambda_demo.py` (repo root, standard library only, handler
+`lambda_demo.handler`) reproduces the live demo-only endpoint
+(function `shelfscan-demo`, eu-north-1, Python 3.14, public Function
+URL, auth NONE — deploy note in the file docstring and in
+`docs/LAMBDA_DEMO.md`). It returns the same `/health` and `/api/demo`
+shapes, statelessly, with no OpenCV import and no fake inference.
+Stated honestly: this reproduces the demo endpoint only, not the
+full FastAPI OpenCV 5 app, and the full app still requires running
+the repo locally (see "How to run"). Check it with
+`python lambda_demo.py` or
+`python -m pytest tests/test_lambda_demo.py -q`.
 
 ## Architecture
 
@@ -88,11 +114,21 @@ no webcam, no /api/frame). The full FastAPI + OpenCV 5 app runs
 locally from this repo only — see "How to run". App Runner eu-west-2
 was not deployed and is not the judging path; `apprunner.yaml` and
 `docs/DEPLOYMENT.md` are superseded plans, retained for reference only.
-Reproducibility limit: the Lambda demo code is not in this repo, so
-the live endpoint cannot be rebuilt from this repo alone. No Lambda
+Reproducibility: the Lambda demo is reproduced in this repo by
+`lambda_demo.py` (repo root, standard library only — see
+`docs/LAMBDA_DEMO.md`). It returns the same `/health` and `/api/demo`
+shapes as the live endpoint, statelessly and with no OpenCV import
+and no fake inference: `/api/demo` is a staged illustration
+(synthetic sparse shelf, total 3, Gap, changed_ratio 0.625 against a
+full baseline of 8, annotated image null). This reproduces the demo
+endpoint only, not the full FastAPI OpenCV 5 app — the full app still
+requires running this repo locally (see "How to run" above). No Lambda
 latency, memory, or cost figure is claimed here, because none has been
 measured on Lambda; local figures are local only and must not be
-presented as Lambda figures.
+presented as Lambda figures. The live function was deployed from code
+outside this repo, so `lambda_demo.py` is a reproduction of its
+observed responses, not a byte-for-byte copy of the originally
+deployed source.
 
 See `docs/architecture.md`, `docs/TECHNICAL_REPORT.md`,
 `docs/EVALUATION.md`, `docs/DEPLOYMENT.md`, `docs/VIDEO_SCRIPT.md`.
@@ -121,12 +157,14 @@ See `docs/architecture.md`, `docs/TECHNICAL_REPORT.md`,
   staged before/after shelf photos with hand counts (see
   `eval/README.md`).
 - Single view: hidden/occluded items cannot be detected.
-- Impact, stated plainly: v1 has no push, email, SMS, or sound alert
-  — a gap is only visible to someone watching the dashboard. No time
-  saved, lost-sales avoided, or owner-feedback result is claimed,
-  because no shop pilot or real-shelf before/after test has been run
-  yet. The benefit to a single owner-manager is a hypothesis to be
-  tested in a pilot, not a demonstrated outcome.
+- Alerts, stated plainly: v1 has an in-dashboard alert only (Gap/Low
+  sustained for 5 consecutive frames; banner, session history, CSV) —
+  no push, email, SMS, or sound notification is sent, so an alert is
+  only visible to someone watching the dashboard. No time saved,
+  lost-sales avoided, or owner-feedback result is claimed, because
+  no shop pilot or real-shelf before/after test has been run yet.
+  The benefit to a single owner-manager is a hypothesis to be tested
+  in a pilot, not a demonstrated outcome.
 - Session state is shared, not per-user: the demo overwrites the
   shared baseline, and two judges/tabs can corrupt each other's
   tracking/history. The local server has no login or rate limiting.

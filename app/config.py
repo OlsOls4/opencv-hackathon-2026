@@ -9,4 +9,7 @@ HOST = os.environ.get("HOST", "0.0.0.0")
 # One shelf ROI, as fractions of width/height. Full frame by default.
 # No 8-zone drawing in v1.
 ROI = (0.05, 0.10, 0.95, 0.90)
-# No PAR_LEVEL in v1: no par-level alerting is implemented.
+# In-dashboard alerting only (app/alerts.py): a Gap/Low state sustained
+# for this many consecutive processed frames records an alert. No
+# external notification (SMS/email/push/sound) is implemented.
+ALERT_CONSECUTIVE_FRAMES = int(os.environ.get("ALERT_CONSECUTIVE_FRAMES", "5"))

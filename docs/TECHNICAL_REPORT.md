@@ -17,7 +17,7 @@
 ## Live AWS demo endpoint — demo-only (26 Oct 2026)
 - Live AWS endpoint: https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/ — AWS Lambda function shelfscan-demo in eu-north-1, via a public Function URL. Only /health and /api/demo are exposed on this endpoint.
 - Demo-only limitation, stated plainly: OpenCV is NOT loaded in the Lambda demo, there is no live webcam or stateful tracking, and there is no /api/frame on Lambda. The full FastAPI app (OpenCV 5.0.0, YOLO26n, confidence 0.35) runs from the repo locally — see "How to run" in README. Do not present the Lambda endpoint as live OpenCV inference.
-- Reproducibility limit: the Lambda demo code is not in this repo, so the live endpoint cannot be rebuilt from this repo alone. /health is a liveness check only — it does not prove OpenCV 5 or YOLO26n loaded in Lambda. No Lambda latency, memory, or cost figure is claimed here, because none has been measured on Lambda; local figures (e.g. /api/demo 163.8 ms) are local only and must not be presented as Lambda figures.
+- Reproducibility: the Lambda demo is now reproduced in this repo by `lambda_demo.py` (see `docs/LAMBDA_DEMO.md`) — same /health and /api/demo shapes, stateless, no OpenCV. It is a reproduction of the live endpoint's observed responses, not a byte-for-byte copy of the originally deployed source. /health is a liveness check only — it does not prove OpenCV 5 or YOLO26n loaded in Lambda. No Lambda latency, memory, or cost figure is claimed here, because none has been measured on Lambda; local figures (e.g. /api/demo 163.8 ms) are local only and must not be presented as Lambda figures.
 - Cost, as of 26 Oct 2026: no Lambda cost, billing-alarm, or free-tier usage figure is claimed for the live endpoint, because none has been recorded from Billing after test calls. Lambda compute is expected to sit inside the free tier only if measured usage stays below the account's monthly request and GB-second allowances, shared across all functions in the account and split across the October/November boundary; CloudWatch Logs, ECR storage, and data transfer out are billed separately and are not covered by that statement. The Function URL is public (auth NONE) so judges can open it in a browser — it is shared only in the submission, not promoted publicly, and will be disabled/deleted after judging. No account-credit balance is claimed here.
 - Why eu-north-1: App Runner in eu-west-2 was unavailable (no longer accepting new customers from 30 April 2026) and Lambda eu-west-2 was region-blocked for this new account, hence eu-north-1.
 
@@ -95,7 +95,9 @@
    often found by a customer, not staff.
 2. Solution: one shelf, one camera, one ROI. Baseline a full shelf, then
    live Full / Low / Gap / Check shelf states, restock confirmation,
-   history + CSV. Demo mode first for judges.
+   history + CSV, and an in-dashboard alert only (Gap/Low sustained for
+   5 consecutive frames; banner + session/CSV, no external
+   notification). Demo mode first for judges.
 3. Architecture: see docs/architecture.md. Full inference runs locally from
    the repo, not in browser; the AWS Lambda endpoint is demo-only (no
    OpenCV, /health and /api/demo only — see "Live AWS demo endpoint" above).
@@ -147,8 +149,11 @@
    (changed_ratio ≥ 0.30) has not been observed in any test: the synthetic
    "Gap" case returned Low (changed_ratio 0.250). Camera movement, gradual
    lighting change, occlusion, and restock confirmation are untested.
-   v1 has no push, email, SMS, or sound alert — a gap is only visible to
-   someone watching the dashboard. Session state is shared, not per-user.
+   v1 has an in-dashboard alert only (Gap/Low sustained for 5
+   consecutive frames, shown as a dashboard banner and exported via
+   /api/session and /api/export.csv) — no push, email, SMS, or sound
+   notification is sent, so an alert is only visible to someone
+   watching the dashboard. Session state is shared, not per-user.
    The local server has no login or rate limiting. The Dockerfile has not
    been build-tested and the Lambda demo code is not in this repo.
 9. Responsible use and privacy: shelf only, no facial recognition, no audio,
@@ -163,3 +168,33 @@
    it only with judges.
 10. Future work (separated from v1): multi-shelf, SKU work, POS integration,
     real shop pilot — none claimed as done.
+
+11. Counting threshold tuning (26 Oct 2026, local only): the same 5
+    countable real-shelf images and hand counts as section 7 were re-run
+    with app/inference.py Detector.detect_tiled 3x3, OpenCV 5.0.0, YOLO26n,
+    at conf 0.25, 0.35 and 0.50. The 0.35 re-run reproduced the baseline
+    exactly (per-image 0, 61, 4, 7, 21; total 93). Full per-image results:
+    results/real_shelf_threshold_tuning.csv and .json.
+    Per-image predicted (hand in brackets): bleach_bottles [24]: 2 / 0 / 0;
+    lemonade_bottles [88]: 72 / 61 / 52; cookie_boxes [20]: 7 / 4 / 0;
+    soda_cans [27]: 9 / 7 / 2; wooden_bottles [16]: 27 / 21 / 11
+    (order: conf 0.25 / 0.35 / 0.50).
+    Summary (n=5): conf 0.25 — MAE 16.0, bias -11.6, exact 0/5, total 117,
+    mean tiled latency 4,348 ms; conf 0.35 — MAE 18.4, bias -16.4,
+    exact 0/5, total 93, mean 4,302 ms; conf 0.50 — MAE 22.0, bias -22.0,
+    exact 0/5, total 65, mean 3,880 ms. Latencies in this run were higher
+    than the baseline run (1,209-1,675 ms) and did not vary systematically
+    with threshold, so no latency claim is made for any threshold.
+    Decision: default UNCHANGED at 0.35 (app/config.py CONF_THRESHOLD).
+    The 0.25 MAE gain (18.4 -> 16.0) is not a clear robust win: it is
+    driven almost entirely by one image (lemonade_bottles abs error
+    27 -> 16, of a 12-point total abs-error improvement), while
+    wooden_bottles worsened (abs error 5 -> 11) and exact stayed 0/5 at
+    every threshold, with a still-large negative bias at 0.25. Lowering
+    the threshold also added a spurious "person" detection on soda_cans.
+    Half_empty_shelves.jpg was again excluded (qualitative only).
+    Honest limitation, unchanged by tuning: the COCO label-space still
+    limits counting — bleach bottles score 0-2 at every threshold,
+    cookie boxes are read as "cell phone", and cans/bottles as
+    "refrigerator"/"cup", so no threshold fixes the undercount; counting
+    remains a secondary signal behind baseline drift.

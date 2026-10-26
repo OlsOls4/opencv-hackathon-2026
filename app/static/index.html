@@ -5,8 +5,9 @@
 <h1>ShelfScan</h1>
 <p>One shelf, one camera, one area. Baseline a full shelf, then watch Full / Low / Gap / Check shelf. Demo mode needs no webcam.</p>
 <div id="status" role="status">Model: yolo26n.onnx · Inference runs on the server, not in your browser. (OpenCV version shown by /health.)</div>
+<div id="alertBanner" role="alert" style="display:none"><span id="alertText"></span> <button id="dismissBtn">Dismiss alert</button></div>
 <p>Shelf states (from baseline drift, not from the item count): Full — changed under 10%, no action. Low — changed 10–30%, check soon. Gap — changed 30% or more, restock now. Check shelf — large brightness/camera shift, do not trust the state; re-check lighting and camera, then re-capture the baseline if the shelf is full.</p>
-<p>Restock flow: 1) Restock the shelf fully. 2) Click “Capture baseline (full shelf) — use after restocking” with the webcam running. 3) The state should return to Full. There is no separate restock button — re-baselining is the restock confirmation.</p>
+<p>Restock flow: 1) Restock the shelf fully. 2) Click “Capture baseline (full shelf) — use after restocking” with the webcam running. 3) The state should return to Full. There is no separate restock button — re-baselining is the restock confirmation, and it also clears any active alert. Alerts are in-dashboard only: a Gap or Low state sustained for 5 consecutive frames shows a banner here; no SMS, email, push, or sound notification is sent.</p>
 <section><img id="view" alt="Annotated shelf view" src="">
 <video id="video" autoplay muted playsinline style="display:none"></video><canvas id="canvas" style="display:none"></canvas></section>
 <section class="controls">

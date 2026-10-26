@@ -1,0 +1,188 @@
+{
+  "method": "app/inference.py Detector.detect_tiled 3x3, OpenCV 5.0.0, YOLO26n ONNX, thresholds 0.25/0.35/0.50; same 5 countable real-shelf images and hand counts as results/real_shelf_eval_results.csv; half_empty_shelves.jpg excluded (qualitative only)",
+  "hand_counts": {
+    "bleach_bottles.jpg": 24,
+    "lemonade_bottles.jpg": 88,
+    "cookie_boxes.jpg": 20,
+    "soda_cans.jpg": 27,
+    "wooden_bottles.jpg": 16
+  },
+  "summary_by_threshold": {
+    "0.25": {
+      "MAE": 16.0,
+      "bias": -11.6,
+      "exact_match": 0,
+      "total_hand": 175,
+      "total_predicted": 117,
+      "n": 5
+    },
+    "0.35": {
+      "MAE": 18.4,
+      "bias": -16.4,
+      "exact_match": 0,
+      "total_hand": 175,
+      "total_predicted": 93,
+      "n": 5
+    },
+    "0.5": {
+      "MAE": 22.0,
+      "bias": -22.0,
+      "exact_match": 0,
+      "total_hand": 175,
+      "total_predicted": 65,
+      "n": 5
+    }
+  },
+  "rows": [
+    {
+      "image": "bleach_bottles.jpg",
+      "hand_count": 24,
+      "conf_threshold": 0.25,
+      "predicted_count": 2,
+      "error": -22,
+      "abs_error": 22,
+      "predicted_labels": "{\"cup\": 2}",
+      "latency_ms_tiled3x3": 4235.3
+    },
+    {
+      "image": "lemonade_bottles.jpg",
+      "hand_count": 88,
+      "conf_threshold": 0.25,
+      "predicted_count": 72,
+      "error": -16,
+      "abs_error": 16,
+      "predicted_labels": "{\"bottle\": 63, \"refrigerator\": 9}",
+      "latency_ms_tiled3x3": 3714.6
+    },
+    {
+      "image": "cookie_boxes.jpg",
+      "hand_count": 20,
+      "conf_threshold": 0.25,
+      "predicted_count": 7,
+      "error": -13,
+      "abs_error": 13,
+      "predicted_labels": "{\"book\": 1, \"cell phone\": 6}",
+      "latency_ms_tiled3x3": 4991.4
+    },
+    {
+      "image": "soda_cans.jpg",
+      "hand_count": 27,
+      "conf_threshold": 0.25,
+      "predicted_count": 9,
+      "error": -18,
+      "abs_error": 18,
+      "predicted_labels": "{\"bottle\": 5, \"cup\": 1, \"person\": 1, \"refrigerator\": 2}",
+      "latency_ms_tiled3x3": 4031.0
+    },
+    {
+      "image": "wooden_bottles.jpg",
+      "hand_count": 16,
+      "conf_threshold": 0.25,
+      "predicted_count": 27,
+      "error": 11,
+      "abs_error": 11,
+      "predicted_labels": "{\"bottle\": 21, \"cup\": 5, \"refrigerator\": 1}",
+      "latency_ms_tiled3x3": 4767.5
+    },
+    {
+      "image": "bleach_bottles.jpg",
+      "hand_count": 24,
+      "conf_threshold": 0.35,
+      "predicted_count": 0,
+      "error": -24,
+      "abs_error": 24,
+      "predicted_labels": "{}",
+      "latency_ms_tiled3x3": 3955.6
+    },
+    {
+      "image": "lemonade_bottles.jpg",
+      "hand_count": 88,
+      "conf_threshold": 0.35,
+      "predicted_count": 61,
+      "error": -27,
+      "abs_error": 27,
+      "predicted_labels": "{\"bottle\": 53, \"refrigerator\": 8}",
+      "latency_ms_tiled3x3": 5536.1
+    },
+    {
+      "image": "cookie_boxes.jpg",
+      "hand_count": 20,
+      "conf_threshold": 0.35,
+      "predicted_count": 4,
+      "error": -16,
+      "abs_error": 16,
+      "predicted_labels": "{\"cell phone\": 4}",
+      "latency_ms_tiled3x3": 3467.0
+    },
+    {
+      "image": "soda_cans.jpg",
+      "hand_count": 27,
+      "conf_threshold": 0.35,
+      "predicted_count": 7,
+      "error": -20,
+      "abs_error": 20,
+      "predicted_labels": "{\"bottle\": 4, \"cup\": 1, \"refrigerator\": 2}",
+      "latency_ms_tiled3x3": 4538.1
+    },
+    {
+      "image": "wooden_bottles.jpg",
+      "hand_count": 16,
+      "conf_threshold": 0.35,
+      "predicted_count": 21,
+      "error": 5,
+      "abs_error": 5,
+      "predicted_labels": "{\"bottle\": 17, \"cup\": 3, \"refrigerator\": 1}",
+      "latency_ms_tiled3x3": 4013.2
+    },
+    {
+      "image": "bleach_bottles.jpg",
+      "hand_count": 24,
+      "conf_threshold": 0.5,
+      "predicted_count": 0,
+      "error": -24,
+      "abs_error": 24,
+      "predicted_labels": "{}",
+      "latency_ms_tiled3x3": 4701.6
+    },
+    {
+      "image": "lemonade_bottles.jpg",
+      "hand_count": 88,
+      "conf_threshold": 0.5,
+      "predicted_count": 52,
+      "error": -36,
+      "abs_error": 36,
+      "predicted_labels": "{\"bottle\": 45, \"refrigerator\": 7}",
+      "latency_ms_tiled3x3": 3884.4
+    },
+    {
+      "image": "cookie_boxes.jpg",
+      "hand_count": 20,
+      "conf_threshold": 0.5,
+      "predicted_count": 0,
+      "error": -20,
+      "abs_error": 20,
+      "predicted_labels": "{}",
+      "latency_ms_tiled3x3": 2748.1
+    },
+    {
+      "image": "soda_cans.jpg",
+      "hand_count": 27,
+      "conf_threshold": 0.5,
+      "predicted_count": 2,
+      "error": -25,
+      "abs_error": 25,
+      "predicted_labels": "{\"bottle\": 1, \"refrigerator\": 1}",
+      "latency_ms_tiled3x3": 3815.5
+    },
+    {
+      "image": "wooden_bottles.jpg",
+      "hand_count": 16,
+      "conf_threshold": 0.5,
+      "predicted_count": 11,
+      "error": -5,
+      "abs_error": 5,
+      "predicted_labels": "{\"bottle\": 9, \"cup\": 2}",
+      "latency_ms_tiled3x3": 4248.8
+    }
+  ]
+}

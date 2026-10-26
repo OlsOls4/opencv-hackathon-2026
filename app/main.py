@@ -17,6 +17,7 @@ from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 
 from app import config
+from app.alerts import AlertManager
 from app.inference import Detector, decode_image, encode_jpeg
 from app.schemas import counts_from_detections, result_shape
 from app.segmentation import segment_snapshot
@@ -26,7 +27,8 @@ app = FastAPI(title="ShelfScan")
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 detector = None
 tracker = Tracker(max_missed=5)
-history = []  # list of {time, total, state, counts}
+history = []  # list of {time, total, state, counts, alert}
+alert_manager = AlertManager(consecutive_frames=config.ALERT_CONSECUTIVE_FRAMES)
 _model_name = "yolo26n.onnx"
 
 
@@ -52,11 +54,15 @@ def _process(img, conf=None):
     counts = counts_from_detections(detections)
     entry = {"time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
              "total": len(detections), "state": occ["state"], "counts": dict(counts)}
+    alert = alert_manager.update(occ["state"], len(detections), entry["time"])
+    entry["alert"] = alert["state"] if alert else ""
     history.append(entry)
     history[:] = history[-200:]
-    return result_shape(counts, len(detections), track["tracks"], latency,
-                        _model_name, det.conf_threshold, state=occ["state"],
-                        changed_ratio=occ.get("changed_ratio"), annotated_b64=_b64(annotated))
+    result = result_shape(counts, len(detections), track["tracks"], latency,
+                          _model_name, det.conf_threshold, state=occ["state"],
+                          changed_ratio=occ.get("changed_ratio"), annotated_b64=_b64(annotated))
+    result["active_alert"] = alert
+    return result
 
 
 def make_demo_image(full=True):
@@ -148,7 +154,9 @@ async def api_baseline(file: UploadFile = File(...)):
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=400)
     get_detector().set_baseline(img, roi=config.ROI)
-    return {"status": "baseline captured", "roi": config.ROI}
+    # Re-baselining is the restock confirmation: it clears any active alert.
+    cleared = alert_manager.clear_for_rebaseline()
+    return {"status": "baseline captured", "roi": config.ROI, "alert_cleared": cleared}
 
 
 @app.post("/api/snapshot")
@@ -182,21 +190,33 @@ def api_demo():
 def api_session():
     track = {"visible": len([t for t in tracker.tracks.values() if t["missed"] == 0]),
              "unique_seen": tracker.unique_seen}
-    return {"session": track, "history": history[-50:]}
+    return {"session": track, "history": history[-50:],
+            "active_alert": alert_manager.active, "alerts": alert_manager.alerts[-50:]}
+
+
+@app.get("/api/alerts")
+def api_alerts():
+    return {"active_alert": alert_manager.active, "alerts": alert_manager.alerts[-50:]}
+
+
+@app.post("/api/alerts/dismiss")
+def api_alert_dismiss():
+    dismissed = alert_manager.dismiss()
+    return {"status": "dismissed" if dismissed else "no active alert"}
 
 
 @app.post("/api/session/reset")
 def api_reset():
-    tracker.reset(); history.clear()
+    tracker.reset(); history.clear(); alert_manager.reset()
     return {"status": "reset"}
 
 
 @app.get("/api/export.csv")
 def api_export():
     out = io.StringIO(); w = csv.writer(out)
-    w.writerow(["time", "total", "state", "counts"])
+    w.writerow(["time", "total", "state", "counts", "alert"])
     for h in history:
-        w.writerow([h["time"], h["total"], h["state"], h["counts"]])
+        w.writerow([h["time"], h["total"], h["state"], h["counts"], h.get("alert", "")])
     return Response(out.getvalue(), media_type="text/csv",
                     headers={"Content-Disposition": "attachment; filename=shelfscan-session.csv"})
 
