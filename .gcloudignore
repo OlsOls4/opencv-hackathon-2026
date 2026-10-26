@@ -1,0 +1,15 @@
+# Keep the Cloud Run build context small: the image only needs app/,
+# models/ and scripts/ (see Dockerfile). Excluding these avoids uploading
+# the local venv, results and git history on every build.
+.venv/
+.export-venv/
+.git/
+.github/
+__pycache__/
+*.pyc
+.pytest_cache/
+results/
+eval/raw/
+*.mp4
+.env
+uploads/

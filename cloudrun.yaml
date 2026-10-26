@@ -1,0 +1,41 @@
+# ShelfScan — Cloud Run service definition (PREPARED ONLY, not deployed).
+# Template: replace PROJECT_ID before use. Primary deploy path is the
+# `gcloud run deploy` command in docs/GCP_CLOUD_RUN.md, which sets the
+# same values with flags. This YAML is the equivalent declarative form
+# (`gcloud run services replace cloudrun.yaml`).
+#
+# Values chosen for $0 intent (see docs/GCP_CLOUD_RUN.md for why):
+#   region: europe-west1 (Belgium, near-UK) — VERIFY its price tier in the
+#     console/pricing calculator before deploying; the free-tier figures
+#     are explicitly based on us-central1 pricing (see the doc).
+#   cpu: 1, memory: 2Gi, min instances: 0 (scale to zero), max: 3
+#   concurrency: 10, request timeout: 300s (covers cold start + model load)
+#   ingress: all + allow-unauthenticated is set at deploy time with
+#     --allow-unauthenticated (judges need a public URL, no login).
+#   No Cloud SQL, no load balancer, no VPC connector, no min instances.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: shelfscan
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "3"
+    spec:
+      containerConcurrency: 10
+      timeoutSeconds: 300
+      containers:
+        - image: europe-west1-docker.pkg.dev/PROJECT_ID/shelfscan/shelfscan:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: "1"
+              memory: 2Gi
+  traffic:
+    - percent: 100
+      latestRevision: true
