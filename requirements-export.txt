@@ -1,0 +1,3 @@
+# SEPARATE export environment ONLY. Never install in the runtime image.
+ultralytics
+onnx
