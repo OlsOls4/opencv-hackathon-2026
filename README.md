@@ -13,13 +13,14 @@ one fixed ROI, drift as primary, generic YOLO counting demoted to
 secondary because COCO cannot name packaged goods. The pipeline itself
 uses standard OpenCV techniques and an off-the-shelf COCO model.
 
-**Live demo for judges (no camera needed, JSON only):** open
+**Live demo for judges (no camera needed):** open the full app on
+AWS EC2 at http://16.171.250.54:8000 and follow the links to /health
+(OpenCV 5.0.0) and /api/demo. A secondary demo-only JSON link is
 https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/
-and follow the links to /health and /api/demo. This Lambda link returns
-JSON only — it is not the ShelfScan dashboard, it runs no OpenCV
-inference, and it has no webcam, upload, baseline, or restock actions.
-To use the dashboard ("Try demo shelf", webcam, baseline, CSV), run the
-full FastAPI app from this repo locally; see "How to run" below.
+— it returns JSON only, runs no OpenCV inference, and has no webcam,
+upload, baseline, or restock actions. To use the dashboard ("Try demo
+shelf", webcam, baseline, CSV) with your own camera, run the full
+FastAPI app from this repo locally; see "How to run" below.
 Demo images are synthetic and labelled as staged footage.
 
 **Shelf states (from baseline drift, not from the item count):**
@@ -70,10 +71,10 @@ docker build -t shelfscan . && docker run -p 8000:8000 shelfscan
 
 Docker from a fresh GitHub clone: the Dockerfile now runs
 `python models/download_model.py` (SHA256-verified) during the build,
-because the ONNX file is not committed. The Dockerfile itself has not
-been build-tested (no Docker in this VM); do not claim a tested
-container image until a build and a /health + /api/demo run from that
-image have been recorded, including the image digest used.
+because the ONNX file is not committed. Docker build PASSED on AWS
+EC2 (26 Oct 2026, image shelfscan:latest, 387 MB, container Up,
+/health OpenCV 5.0.0, /api/demo Low 0.216). No digest was recorded
+for the locally built image; do not claim a registry digest.
 Tiled mode is stills-only: high-resolution tiled inference takes
 ~1.27 s, so it cannot sustain the 2–4 FPS webcam loop.
 
@@ -108,12 +109,14 @@ tracker → annotation) → browser displays counts.
 Live webcam frames are processed in memory and NOT stored by default;
 only an explicit Save snapshot action stores an image.
 
-**As deployed for judging:** browser → public Lambda Function URL
-(eu-north-1, demo-only: GET /health and GET /api/demo only, no OpenCV,
-no webcam, no /api/frame). The full FastAPI + OpenCV 5 app runs
-locally from this repo only — see "How to run". App Runner eu-west-2
-was not deployed and is not the judging path; `apprunner.yaml` and
-`docs/DEPLOYMENT.md` are superseded plans, retained for reference only.
+**As deployed for judging:** browser → public EC2 endpoint
+http://16.171.250.54:8000 (t3.micro, eu-north-1, full FastAPI +
+OpenCV 5 app, Docker). A secondary public Lambda Function URL
+(eu-north-1, demo-only: GET /health and GET /api/demo only, no
+OpenCV, no webcam, no /api/frame) is kept for JSON-only checks.
+App Runner eu-west-2 was not deployed and is not the judging path;
+`apprunner.yaml` and `docs/DEPLOYMENT.md` are superseded plans,
+retained for reference only.
 Reproducibility: the Lambda demo is reproduced in this repo by
 `lambda_demo.py` (repo root, standard library only — see
 `docs/LAMBDA_DEMO.md`). It returns the same `/health` and `/api/demo`
@@ -140,19 +143,22 @@ See `docs/architecture.md`, `docs/TECHNICAL_REPORT.md`,
   single-tile MAE 38.05, tiled 3×3 MAE 26.35, pred 310 / GT 807,
   exact 0/20 — counting is reported as a failure, not a feature claim.
 - Baseline drift thresholds (Full <0.10, Low <0.30 changed_ratio,
-  brightness guard >60 in `app/inference.py:occupancy_state`) are
-  initial, unvalidated defaults from a single synthetic painted-band
-  test, not from a real before/after shelf pair. The Gap state
-  (changed_ratio ≥ 0.30) has not been observed in any test: the
-  synthetic "Gap" case returned Low (changed_ratio 0.250). Camera
-  movement, gradual lighting change, occlusion, and restock
-  confirmation are untested. No real-shelf accuracy is claimed.
-- Real shelf stills (separate team, results/real_shelf_eval_results.json):
+  brightness guard >60, plus phase <0.10 and shift >10 px camera
+  guards in `app/inference.py:occupancy_state`) are initial defaults,
+  now validated on a real-photo simulated gap and on 24 online
+  videos (322 frames, false Gaps 50 → 5 with both guards), but not
+  on a real physical removal pair or a shop pilot. Gap is observed
+  only for a whole-row removal inside one shelf area (Gap 0.4864);
+  small central gaps are missed. Camera movement is guarded, not
+  solved; gradual lighting change, occlusion, and restock
+  confirmation remain untested. No real-shelf accuracy is claimed.
+- Real shelf stills (results/real_shelf_eval_results.json):
   5 countable images, hand total 175, predicted 93, MAE 18.4,
   bias −16.4, exact 0/5; a 6th image was qualitative only (not reliably
   countable). Counting still fails on real shelves — this does not
-  change the drift-first design, and no real before/after drift pair
-  has been tested yet.
+  change the drift-first design. A real physical before/after
+  drift pair has still not been tested; only a simulated gap on a
+  real photo has.
 - Demo images are synthetic; real-shelf drift evaluation still needs
   staged before/after shelf photos with hand counts (see
   `eval/README.md`).
