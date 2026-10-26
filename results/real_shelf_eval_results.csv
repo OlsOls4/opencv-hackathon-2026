@@ -1,0 +1,7 @@
+image,hand_count,predicted_count,error,abs_error,predicted_labels,latency_ms_tiled3x3,note
+bleach_bottles.jpg,24,0,-24,24,{},1343,
+lemonade_bottles.jpg,88,61,-27,27,"{""bottle"": 53, ""refrigerator"": 8}",1250,
+cookie_boxes.jpg,20,4,-16,16,"{""cell phone"": 4}",1675,
+soda_cans.jpg,27,7,-20,20,"{""bottle"": 4, ""refrigerator"": 2, ""cup"": 1}",1209,
+wooden_bottles.jpg,16,21,5,5,"{""bottle"": 17, ""cup"": 3, ""refrigerator"": 1}",1423,
+half_empty_shelves.jpg,,2,,,"{""suitcase"": 1, ""tv"": 1}",1344,"Hand count not reliably countable (wide shot, distant/small packets, dark gaps); excluded from metrics. Qualitative only."

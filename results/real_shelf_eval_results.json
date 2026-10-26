@@ -1,0 +1,84 @@
+{
+  "method": "app/inference.py Detector.detect_tiled 3x3, conf 0.35, OpenCV 5.0.0, YOLO26n ONNX",
+  "metrics_countable_n5": {
+    "MAE": 18.4,
+    "bias": -16.4,
+    "exact_match": 0,
+    "within_plus_minus_1": 0,
+    "total_hand": 175,
+    "total_predicted": 93
+  },
+  "rows": [
+    {
+      "image": "bleach_bottles.jpg",
+      "hand_count": 24,
+      "predicted_count": 0,
+      "error": -24,
+      "abs_error": 24,
+      "predicted_labels": {},
+      "latency_ms_tiled3x3": 1343
+    },
+    {
+      "image": "lemonade_bottles.jpg",
+      "hand_count": 88,
+      "predicted_count": 61,
+      "error": -27,
+      "abs_error": 27,
+      "predicted_labels": {
+        "bottle": 53,
+        "refrigerator": 8
+      },
+      "latency_ms_tiled3x3": 1250
+    },
+    {
+      "image": "cookie_boxes.jpg",
+      "hand_count": 20,
+      "predicted_count": 4,
+      "error": -16,
+      "abs_error": 16,
+      "predicted_labels": {
+        "cell phone": 4
+      },
+      "latency_ms_tiled3x3": 1675
+    },
+    {
+      "image": "soda_cans.jpg",
+      "hand_count": 27,
+      "predicted_count": 7,
+      "error": -20,
+      "abs_error": 20,
+      "predicted_labels": {
+        "bottle": 4,
+        "refrigerator": 2,
+        "cup": 1
+      },
+      "latency_ms_tiled3x3": 1209
+    },
+    {
+      "image": "wooden_bottles.jpg",
+      "hand_count": 16,
+      "predicted_count": 21,
+      "error": 5,
+      "abs_error": 5,
+      "predicted_labels": {
+        "bottle": 17,
+        "cup": 3,
+        "refrigerator": 1
+      },
+      "latency_ms_tiled3x3": 1423
+    },
+    {
+      "image": "half_empty_shelves.jpg",
+      "hand_count": null,
+      "predicted_count": 2,
+      "error": null,
+      "abs_error": null,
+      "predicted_labels": {
+        "suitcase": 1,
+        "tv": 1
+      },
+      "latency_ms_tiled3x3": 1344,
+      "note": "Hand count not reliably countable (wide shot, distant/small packets, dark gaps); excluded from metrics. Qualitative only."
+    }
+  ]
+}

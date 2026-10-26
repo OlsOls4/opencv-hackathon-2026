@@ -1,0 +1,72 @@
+{
+  "bleach_bottles.jpg": {
+    "predicted_count": 0,
+    "labels": {},
+    "latency_ms": 1342.8,
+    "shape": [
+      1280,
+      1920
+    ]
+  },
+  "cookie_boxes.jpg": {
+    "predicted_count": 4,
+    "labels": {
+      "cell phone": 4
+    },
+    "latency_ms": 1674.9,
+    "shape": [
+      2880,
+      1920
+    ]
+  },
+  "half_empty_shelves.jpg": {
+    "predicted_count": 2,
+    "labels": {
+      "suitcase": 1,
+      "tv": 1
+    },
+    "latency_ms": 1344.1,
+    "shape": [
+      1440,
+      1920
+    ]
+  },
+  "lemonade_bottles.jpg": {
+    "predicted_count": 61,
+    "labels": {
+      "refrigerator": 8,
+      "bottle": 53
+    },
+    "latency_ms": 1249.9,
+    "shape": [
+      1168,
+      1920
+    ]
+  },
+  "soda_cans.jpg": {
+    "predicted_count": 7,
+    "labels": {
+      "bottle": 4,
+      "refrigerator": 2,
+      "cup": 1
+    },
+    "latency_ms": 1208.8,
+    "shape": [
+      1080,
+      1920
+    ]
+  },
+  "wooden_bottles.jpg": {
+    "predicted_count": 21,
+    "labels": {
+      "bottle": 17,
+      "cup": 3,
+      "refrigerator": 1
+    },
+    "latency_ms": 1423.2,
+    "shape": [
+      1440,
+      1920
+    ]
+  }
+}
