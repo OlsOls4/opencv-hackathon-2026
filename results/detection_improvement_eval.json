@@ -1,0 +1,107 @@
+{
+  "COCO_0.35": {
+    "per_image": {
+      "bleach_bottles.jpg": 0,
+      "lemonade_bottles.jpg": 61,
+      "cookie_boxes.jpg": 4,
+      "soda_cans.jpg": 7,
+      "wooden_bottles.jpg": 21
+    },
+    "metrics": {
+      "MAE": 18.4,
+      "bias": -16.4,
+      "exact": 0,
+      "n": 5
+    }
+  },
+  "COCO_0.25": {
+    "per_image": {
+      "bleach_bottles.jpg": 2,
+      "lemonade_bottles.jpg": 72,
+      "cookie_boxes.jpg": 7,
+      "soda_cans.jpg": 9,
+      "wooden_bottles.jpg": 27
+    },
+    "metrics": {
+      "MAE": 16.0,
+      "bias": -11.6,
+      "exact": 0,
+      "n": 5
+    }
+  },
+  "COCO_0.50": {
+    "per_image": {
+      "bleach_bottles.jpg": 0,
+      "lemonade_bottles.jpg": 52,
+      "cookie_boxes.jpg": 0,
+      "soda_cans.jpg": 2,
+      "wooden_bottles.jpg": 11
+    },
+    "metrics": {
+      "MAE": 22.0,
+      "bias": -22.0,
+      "exact": 0,
+      "n": 5
+    }
+  },
+  "contour": {
+    "per_image": {
+      "bleach_bottles.jpg": 60,
+      "lemonade_bottles.jpg": 66,
+      "cookie_boxes.jpg": 90,
+      "soda_cans.jpg": 22,
+      "wooden_bottles.jpg": 65
+    },
+    "metrics": {
+      "MAE": 36.4,
+      "bias": 25.6,
+      "exact": 0,
+      "n": 5
+    }
+  },
+  "mser": {
+    "per_image": {
+      "bleach_bottles.jpg": 56,
+      "lemonade_bottles.jpg": 133,
+      "cookie_boxes.jpg": 40,
+      "soda_cans.jpg": 72,
+      "wooden_bottles.jpg": 22
+    },
+    "metrics": {
+      "MAE": 29.6,
+      "bias": 29.6,
+      "exact": 0,
+      "n": 5
+    }
+  },
+  "blob": {
+    "per_image": {
+      "bleach_bottles.jpg": 175,
+      "lemonade_bottles.jpg": 162,
+      "cookie_boxes.jpg": 244,
+      "soda_cans.jpg": 169,
+      "wooden_bottles.jpg": 119
+    },
+    "metrics": {
+      "MAE": 138.8,
+      "bias": 138.8,
+      "exact": 0,
+      "n": 5
+    }
+  },
+  "vertical_peaks": {
+    "per_image": {
+      "bleach_bottles.jpg": 28,
+      "lemonade_bottles.jpg": 30,
+      "cookie_boxes.jpg": 27,
+      "soda_cans.jpg": 27,
+      "wooden_bottles.jpg": 31
+    },
+    "metrics": {
+      "MAE": 16.8,
+      "bias": -6.4,
+      "exact": 1,
+      "n": 5
+    }
+  }
+}
