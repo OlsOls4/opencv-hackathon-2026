@@ -226,8 +226,12 @@ put in a submission:
    recorded.
 2. `/api/demo` response size checked against the 6 MB synchronous
    payload limit.
-3. `/api/demo` output compared against the local `/api/demo` output
-   (same synthetic shelf, same Gap state, annotated image present).
+3. `/api/demo` output compared against the local `/api/demo` output.
+   Record the actual state observed on Lambda, do not assume Gap or an
+   annotated image: the live Lambda demo returns a staged JSON
+   illustration (synthetic-item: 3, Gap, annotated_image_base64 null),
+   while the local demo state comes from baseline drift — they differ
+   by design.
 4. Two near-simultaneous `/api/demo` calls return consistent results
    (they will, because demo is self-contained — this check is the
    proof that no hidden shared state is involved).
@@ -445,9 +449,9 @@ as the function.
    for the Lambda component, labelled demo-only (§1.1).
 9. Test from an incognito window / second device (not just the same
    browser session): `GET <Function URL>/health`, then
-   `GET <Function URL>/api/demo`. Confirm the demo returns the Gap
-   state and an annotated image, and that the response is under the
-   6 MB synchronous limit.
+   `GET <Function URL>/api/demo`. Record the actual state observed on
+   Lambda (do not assume Gap or an annotated image), and check that
+   the response is under the 6 MB synchronous limit.
 10. Read the CloudWatch Logs `REPORT` lines for the cold and warm
     calls (billed duration, max memory used). Record the real numbers
     in the submission notes; replace every "expected to be inside

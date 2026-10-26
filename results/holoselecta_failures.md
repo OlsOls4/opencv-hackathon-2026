@@ -47,3 +47,10 @@ products. This is NOT a shelf result and NOT labelling accuracy.
   failure on dense packaged goods, and do NOT present YOLO count as the
   primary shelf signal. Baseline/occupancy drift remains the primary claim,
   and it still needs its own before/after test.
+
+## Scope note (judge review, 26 Oct 2026)
+- This file covers single-tile counting only (pred 46 / GT 807). No tiled
+  label breakdown, no precision/recall/F1 at IoU≥0.50, no latency p95,
+  and no video count-stability result exists yet, although
+  docs/EVALUATION.md lists them. Do not quote a labelling accuracy or
+  a tiled failure ranking from this file.

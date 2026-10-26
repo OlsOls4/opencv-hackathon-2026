@@ -1,3 +1,15 @@
+# Deployment — SUPERSEDED App Runner plan + live Lambda demo
+
+> Deployment status, 26 Oct 2026: the live judge link is a demo-only AWS
+> Lambda function in eu-north-1 exposing /health and /api/demo only,
+> with OpenCV NOT loaded. The App Runner eu-west-2 design below is
+> superseded and was not deployed as drawn — App Runner eu-west-2 was
+> unavailable and Lambda eu-west-2 was region-blocked for this account.
+> The full FastAPI + OpenCV 5 app runs from this repo locally only.
+> The Lambda demo code is not in this repo, so the live endpoint cannot
+> be rebuilt from this repo alone. Do not submit the App Runner diagram
+> as the deployed architecture without updating it to the Lambda demo.
+
 # Deployment — AWS App Runner (prepared only, NOT deployed)
 
 1. Olly creates/verifies an AWS account, payment method, and billing alarm

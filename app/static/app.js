@@ -13,10 +13,10 @@ document.getElementById('resetBtn').onclick=async()=>{await fetch('/api/session/
 document.getElementById('csvBtn').onclick=()=>{window.location='/api/export.csv';};
 document.getElementById('conf').oninput=e=>{document.getElementById('confVal').textContent=e.target.value;};
 document.getElementById('upload').onchange=async e=>{if(e.target.files[0]) show(await post(e.target.files[0],'/api/upload'));};
-document.getElementById('snapBtn').onclick=async()=>{const blob=await captureBlob();if(!blob){errEl.textContent='Start webcam or upload first for a snapshot.';return;}
+document.getElementById('snapBtn').onclick=async()=>{const blob=await captureBlob();if(!blob){errEl.textContent='Start the webcam first for a snapshot.';return;}
   const r=await post(blob,'/api/snapshot');if(r.annotated_image_base64) view.src='data:image/jpeg;base64,'+r.annotated_image_base64;
   errEl.textContent=r.label||r.error||'';};
-document.getElementById('baseBtn').onclick=async()=>{const blob=await captureBlob();if(!blob){errEl.textContent='Start webcam first, or use demo then upload a full-shelf photo.';return;}
+document.getElementById('baseBtn').onclick=async()=>{const blob=await captureBlob();if(!blob){errEl.textContent='Start the webcam first to capture a baseline. Uploading a photo does not set the baseline in this version.';return;}
   const fd=new FormData();fd.append('file',blob);const r=await fetch('/api/baseline',{method:'POST',body:fd}).then(x=>x.json());errEl.textContent=r.status||r.error||'';};
 async function captureBlob(){if(!stream) return null;canvas.width=video.videoWidth||640;canvas.height=video.videoHeight||480;
   canvas.getContext('2d').drawImage(video,0,0,canvas.width,canvas.height);return new Promise(res=>canvas.toBlob(res,'image/jpeg',0.85));}

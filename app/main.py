@@ -1,6 +1,8 @@
-"""ShelfScan FastAPI app. Inference runs on the server (AWS in production),
+"""ShelfScan FastAPI app. Inference runs on the server,
 never in the browser. Live webcam frames are processed in memory and are
 NOT stored by default; only an explicit Save snapshot action stores an image.
+Session state is shared, not per-user: /api/demo overwrites the shared
+baseline, so two judges/tabs can corrupt each other's tracking/history.
 """
 import base64
 import csv
@@ -76,7 +78,10 @@ def make_demo_image(full=True):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "opencv": "5.0.0", "model": _model_name}
+    # Liveness only: this does not prove a successful inference until
+    # /api/demo also succeeds.
+    return {"status": "ok", "opencv": cv2.__version__, "model": _model_name,
+            "model_loaded": detector is not None}
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -103,26 +108,31 @@ async def api_upload(file: UploadFile = File(...)):
     if len(data) > config.MAX_IMAGE_MB * 1024 * 1024:
         return JSONResponse({"error": f"File over {config.MAX_IMAGE_MB} MB limit"}, status_code=413)
     # Video: sample frames with VideoCapture from a temp file in /tmp (ephemeral).
+    # Only the first sampled frame is processed, not the full video.
     if file.filename and file.filename.lower().endswith((".mp4", ".mov", ".webm", ".avi")):
         import tempfile
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as tmp:
             tmp.write(data); tmp_path = tmp.name
-        cap = cv2.VideoCapture(tmp_path)
-        frames = []
-        idx = 0
-        while True:
-            ok, frame = cap.read()
-            if not ok:
-                break
-            if idx % 5 == 0:
-                frames.append(frame)
-            idx += 1
-            if len(frames) >= 20:
-                break
-        cap.release()
-        if not frames:
-            return JSONResponse({"error": "No frames decoded from video"}, status_code=400)
-        return _process(frames[0])
+        try:
+            cap = cv2.VideoCapture(tmp_path)
+            frames = []
+            idx = 0
+            while True:
+                ok, frame = cap.read()
+                if not ok:
+                    break
+                if idx % 5 == 0:
+                    frames.append(frame)
+                idx += 1
+                if len(frames) >= 20:
+                    break
+            cap.release()
+            if not frames:
+                return JSONResponse({"error": "No frames decoded from video"}, status_code=400)
+            return _process(frames[0])
+        finally:
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
     try:
         img = decode_image(data)
     except Exception as e:

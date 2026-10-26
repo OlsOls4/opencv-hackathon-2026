@@ -1,3 +1,6 @@
+# SUPERSEDED — NOT DEPLOYED. App Runner is no longer accepting new customers
+# for this account. Do not deploy from this file for judging. The live judge
+# link is the Lambda demo-only endpoint described in docs/TECHNICAL_REPORT.md.
 # AWS App Runner service config — PREPARED ONLY, not deployed.
 # Region: eu-west-2 (London). Size: 2 vCPU / 4 GB to start.
 # After Devpost submission: disable auto-deploy / pin to the submitted commit.

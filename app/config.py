@@ -9,4 +9,4 @@ HOST = os.environ.get("HOST", "0.0.0.0")
 # One shelf ROI, as fractions of width/height. Full frame by default.
 # No 8-zone drawing in v1.
 ROI = (0.05, 0.10, 0.95, 0.90)
-PAR_LEVEL = int(os.environ.get("PAR_LEVEL", "3"))
+# No PAR_LEVEL in v1: no par-level alerting is implemented.

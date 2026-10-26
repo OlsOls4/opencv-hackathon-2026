@@ -1,5 +1,11 @@
 # Video script — ready to record, ≤5 minutes, target 3:30–4:30
 
+> Judge note: no submission video link exists in this repo at the time
+> of writing; do not cite one until a video is recorded and uploaded.
+> Check the actual local /api/demo state before recording — do not
+> assume a Full → Low transition; the Lambda demo returns JSON only
+> (Gap, synthetic-item: 3, no annotated image) and is not the dashboard.
+
 Olly must record and upload this; Muse cannot appear on camera or upload
 to Olly's YouTube/Vimeo/Devpost. Record in one take if possible, captions on,
 no copyrighted music/footage, no faces, home shelf only (do not film in a
@@ -22,10 +28,11 @@ shop without staff permission).
 
 1:15–2:15 — Numbers, with denominators (fill these in before recording)
 - On screen, one card per number, spoken once:
-  - HoloSelecta 20 images: GT 807, MAE [fill from results], exact 0/20,
-    within ±1 [fill] — "counting fails on dense vending products, and
+  - HoloSelecta 20 images: GT 807, single-tile MAE 38.05, exact 0/20,
+    within ±1 0/20 — "counting fails on dense vending products, and
     we report that, not hide it"
-  - Tiled inference (if kept): MAE [fill] vs 38.05 baseline, latency [fill]
+  - Tiled inference (3×3): MAE 26.35 vs 38.05 baseline, pred 310 / GT 807,
+    mean latency ~1.27 s (local, not AWS)
   - Local latency: demo 163.8 ms, bus photo 301 ms (local, not AWS)
 - Do NOT quote a metric without its n and condition. Do NOT claim
   labelling accuracy from HoloSelecta (COCO ≠ 109 GTIN products).

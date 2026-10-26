@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ShelfScan — one shelf, live inventory</title><link rel="stylesheet" href="/static/style.css"></head>
+<title>ShelfScan — one shelf, shelf states</title><link rel="stylesheet" href="/static/style.css"></head>
 <body><main>
 <h1>ShelfScan</h1>
 <p>One shelf, one camera, one area. Baseline a full shelf, then watch Full / Low / Gap / Check shelf. Demo mode needs no webcam.</p>
-<div id="status" role="status">Model: yolo26n.onnx · OpenCV 5.0.0 · Inference runs on the server, not in your browser.</div>
+<div id="status" role="status">Model: yolo26n.onnx · Inference runs on the server, not in your browser. (OpenCV version shown by /health.)</div>
+<p>Shelf states (from baseline drift, not from the item count): Full — changed under 10%, no action. Low — changed 10–30%, check soon. Gap — changed 30% or more, restock now. Check shelf — large brightness/camera shift, do not trust the state; re-check lighting and camera, then re-capture the baseline if the shelf is full.</p>
+<p>Restock flow: 1) Restock the shelf fully. 2) Click “Capture baseline (full shelf) — use after restocking” with the webcam running. 3) The state should return to Full. There is no separate restock button — re-baselining is the restock confirmation.</p>
 <section><img id="view" alt="Annotated shelf view" src="">
 <video id="video" autoplay muted playsinline style="display:none"></video><canvas id="canvas" style="display:none"></canvas></section>
 <section class="controls">
 <button id="demoBtn">Try demo shelf</button>
 <button id="camBtn">Start webcam</button>
-<button id="baseBtn">Capture baseline (full shelf)</button>
+<button id="baseBtn">Capture baseline (full shelf) — use after restocking</button>
 <button id="snapBtn">Segment snapshot (GrabCut)</button>
 <button id="resetBtn">Reset session</button>
 <label>Confidence <input id="conf" type="range" min="0.25" max="0.60" step="0.05" value="0.35"> <span id="confVal">0.35</span></label>
 <label>Upload image/video <input id="upload" type="file" accept="image/*,video/*"></label>
 <button id="csvBtn">Download CSV</button>
 </section>
-<section id="result"><h2>Live counts</h2><p id="state">State: —</p><p id="counts">—</p><p id="latency">—</p><p id="err"></p></section>
+<section id="result"><h2>Live COCO detections (secondary only — not a stock count)</h2><p id="state">State: —</p><p id="counts">—</p><p id="latency">—</p><p id="err"></p></section>
 </main><script src="/static/app.js"></script></body></html>

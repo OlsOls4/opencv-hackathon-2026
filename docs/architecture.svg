@@ -3,7 +3,7 @@
 <g font-family="sans-serif" font-size="13">
 <rect x="10" y="70" width="170" height="80" fill="#eef" stroke="#333"/><text x="20" y="95">Browser webcam</text><text x="20" y="115">JPEG ~640px, 2-4 FPS</text><text x="20" y="135">NO inference in browser</text>
 <text x="190" y="115">-- HTTPS POST /api/frame --&gt;</text>
-<rect x="390" y="50" width="230" height="120" fill="#efe" stroke="#333"/><text x="400" y="75">AWS App Runner eu-west-2</text><text x="400" y="95">FastAPI + OpenCV 5 DNN</text><text x="400" y="115">YOLO26n ONNX [1,300,6]</text><text x="400" y="135">Tracker + baseline drift</text><text x="400" y="155">Annotated JPEG + JSON back</text>
+<rect x="390" y="50" width="230" height="120" fill="#efe" stroke="#333"/><text x="400" y="75">AWS Lambda demo-only eu-north-1</text><text x="400" y="95">NO OpenCV — /health + /api/demo only</text><text x="400" y="115">YOLO26n ONNX [1,300,6]</text><text x="400" y="135">Tracker + baseline drift</text><text x="400" y="155">Annotated JPEG + JSON back</text>
 <text x="630" y="115">--&gt;</text>
 <rect x="670" y="70" width="200" height="80" fill="#fee" stroke="#333"/><text x="680" y="95">Dashboard</text><text x="680" y="115">Counts, Full/Low/Gap/</text><text x="680" y="135">Check shelf, CSV</text>
 <text x="400" y="195">CloudWatch logs · S3 snapshots/history only if in live path · No live frames stored by default</text>
