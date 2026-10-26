@@ -1,13 +1,14 @@
-# ShelfScan — Technical Report (draft, real shelf evaluation still pending)
+# ShelfScan — Technical Report (draft, real before/after drift still pending)
 
-> Status at submission: this report is a draft pending real-shelf
-> drift evaluation; the ≤5-minute video has not been recorded or
-> uploaded (see docs/VIDEO_SCRIPT.md — no video link exists in this
-> repo); the only public endpoint is the Lambda demo-only URL above.
-> Judges should verify the full OpenCV app from the repo locally
-> (README "How to run"). Real-shelf counting on single stills now
-> exists (see §7); real before/after drift pairs and any shop pilot
-> are still untested, so shelf-impact claims remain unproven.
+> Status at submission: real-shelf counting on single stills is done
+> (see §7 and §11: n=5, MAE 18.4, bias −16.4, exact 0/5); real
+> before/after drift pairs and any shop pilot are still untested, so
+> shelf-impact claims remain unproven. The ≤5-minute demo video
+> (4:22) was recorded after this report's earlier draft and predates
+> the real-shelf numbers in §7/§11 — use this report, not the video,
+> for the latest real-shelf numbers. The only public endpoint is the
+> Lambda demo-only URL above. Judges should verify the full OpenCV
+> app from the repo locally (README "How to run").
 > What is new here is scope and signal hierarchy, not a new algorithm:
 > one fixed ROI, baseline/occupancy drift as primary, generic YOLO
 > counting demoted to secondary because COCO cannot name packaged
