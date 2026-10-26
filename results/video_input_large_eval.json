@@ -1,0 +1,1259 @@
+{
+  "method": "scripts/evaluate_video.py, baseline=frame 0 of same video, default ROI, 1 fps sampling, tiled as needed (Detector adaptive). Before = phase guard only (phase<0.10). After = phase guard + shift guard (camera shift magnitude >10 px).",
+  "aggregate_before_phase_guard_only": {
+    "videos": 24,
+    "sampled_frames": 322,
+    "post_baseline_frames": 298,
+    "state_distribution": {
+      "Full": 30,
+      "Check shelf": 188,
+      "Low": 54,
+      "Gap": 50
+    },
+    "gap_frames_post_baseline": 50,
+    "mean_latency_ms_frame_weighted": 683.9,
+    "mean_detections_per_frame_weighted": 5.52
+  },
+  "aggregate_after_phase_plus_shift_guard": {
+    "videos": 24,
+    "sampled_frames": 322,
+    "post_baseline_frames": 298,
+    "state_distribution": {
+      "Full": 30,
+      "Check shelf": 259,
+      "Gap": 5,
+      "Low": 28
+    },
+    "gap_frames_post_baseline": 5,
+    "mean_latency_ms_frame_weighted": 680.9,
+    "mean_detections_per_frame_weighted": 5.52
+  },
+  "no_guard_counterfactual": {
+    "post_baseline_frames": 298,
+    "frames_with_changed_ratio_ge_0.30_would_be_gap": 214,
+    "rate": 0.7181,
+    "note": "Counterfactual from changed_ratio alone, ignoring the brightness guard (>60 also forces Check). It is an upper bound on no-guard false Gap, not a measured run."
+  },
+  "per_video_before": {
+    "books_classroom": {
+      "video": "books_classroom",
+      "path": "results/video_input_large/8363896_books_classroom.mp4",
+      "fps": 30.0,
+      "total_frames": 450,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 15,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 14
+      },
+      "mean_detections": 5.4,
+      "mean_latency_ms": 558.4,
+      "mean_changed_ratio": 0.2515,
+      "max_unique_seen": 27,
+      "frames_with_persisted_track": 13
+    },
+    "bookshelves_living": {
+      "video": "bookshelves_living",
+      "path": "results/video_input_large/10822607_bookshelves_living.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 269,
+      "width": 1080,
+      "height": 1440,
+      "sample_fps": 1.0,
+      "sampled_frames": 9,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 8
+      },
+      "mean_detections": 18.22,
+      "mean_latency_ms": 594.1,
+      "mean_changed_ratio": 0.4849,
+      "max_unique_seen": 115,
+      "frames_with_persisted_track": 7
+    },
+    "boxes_warehouse": {
+      "video": "boxes_warehouse",
+      "path": "results/video_input_large/6170316_boxes_warehouse.mp4",
+      "fps": 25.0,
+      "total_frames": 190,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 8,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 5,
+        "Low": 2
+      },
+      "mean_detections": 1.75,
+      "mean_latency_ms": 567.8,
+      "mean_changed_ratio": 0.21,
+      "max_unique_seen": 3,
+      "frames_with_persisted_track": 7
+    },
+    "cart_journey": {
+      "video": "cart_journey",
+      "path": "results/video_input_large/29068393_cart_journey.mp4",
+      "fps": 30.0,
+      "total_frames": 450,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 15,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 10,
+        "Gap": 4
+      },
+      "mean_detections": 0.67,
+      "mean_latency_ms": 561.1,
+      "mean_changed_ratio": 0.4673,
+      "max_unique_seen": 6,
+      "frames_with_persisted_track": 1
+    },
+    "cart_perspective": {
+      "video": "cart_perspective",
+      "path": "results/video_input_large/29376327_cart_perspective.mp4",
+      "fps": 30.0,
+      "total_frames": 324,
+      "width": 3834,
+      "height": 2160,
+      "sample_fps": 1.0,
+      "sampled_frames": 11,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 10
+      },
+      "mean_detections": 9.91,
+      "mean_latency_ms": 1270.9,
+      "mean_changed_ratio": 0.6063,
+      "max_unique_seen": 61,
+      "frames_with_persisted_track": 10
+    },
+    "chinese_supermarket": {
+      "video": "chinese_supermarket",
+      "path": "results/video_input_large/34813666_chinese_supermarket.mp4",
+      "fps": 59.94005994005994,
+      "total_frames": 340,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 6,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 5
+      },
+      "mean_detections": 3.0,
+      "mean_latency_ms": 507.5,
+      "mean_changed_ratio": 0.4122,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 4
+    },
+    "fruit_veg_aisle": {
+      "video": "fruit_veg_aisle",
+      "path": "results/video_input_large/992683_fruit_veg_aisle.mp4",
+      "fps": 25.0,
+      "total_frames": 636,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 26,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 25
+      },
+      "mean_detections": 6.54,
+      "mean_latency_ms": 552.1,
+      "mean_changed_ratio": 0.6736,
+      "max_unique_seen": 112,
+      "frames_with_persisted_track": 12
+    },
+    "fruit_veg_market": {
+      "video": "fruit_veg_market",
+      "path": "results/video_input_large/15645011_fruit_veg_market.mp4",
+      "fps": 25.0,
+      "total_frames": 477,
+      "width": 1280,
+      "height": 720,
+      "sample_fps": 1.0,
+      "sampled_frames": 20,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Gap": 4,
+        "Check shelf": 15
+      },
+      "mean_detections": 10.25,
+      "mean_latency_ms": 631.5,
+      "mean_changed_ratio": 0.5158,
+      "max_unique_seen": 60,
+      "frames_with_persisted_track": 19
+    },
+    "inventory_tablet": {
+      "video": "inventory_tablet",
+      "path": "results/video_input_large/4292901_inventory_tablet.mp4",
+      "fps": 25.0,
+      "total_frames": 314,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 13,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 12
+      },
+      "mean_detections": 5.92,
+      "mean_latency_ms": 603.3,
+      "mean_changed_ratio": 0.5393,
+      "max_unique_seen": 21,
+      "frames_with_persisted_track": 12
+    },
+    "inventory_warehouse": {
+      "video": "inventory_warehouse",
+      "path": "results/video_input_large/7018670_inventory_warehouse.mp4",
+      "fps": 25.0,
+      "total_frames": 488,
+      "width": 1080,
+      "height": 2048,
+      "sample_fps": 1.0,
+      "sampled_frames": 20,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 3,
+        "Check shelf": 16
+      },
+      "mean_detections": 0.6,
+      "mean_latency_ms": 1238.9,
+      "mean_changed_ratio": 0.4745,
+      "max_unique_seen": 12,
+      "frames_with_persisted_track": 0
+    },
+    "jar_shelves_portrait": {
+      "video": "jar_shelves_portrait",
+      "path": "results/video_input_large/5453398_jar_shelves_portrait.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 355,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 12,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 9,
+        "Gap": 2
+      },
+      "mean_detections": 7.08,
+      "mean_latency_ms": 539.7,
+      "mean_changed_ratio": 0.2132,
+      "max_unique_seen": 18,
+      "frames_with_persisted_track": 11
+    },
+    "library_book": {
+      "video": "library_book",
+      "path": "results/video_input_large/6550147_library_book.mp4",
+      "fps": 25.0,
+      "total_frames": 274,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 11,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 1,
+        "Check shelf": 9
+      },
+      "mean_detections": 2.91,
+      "mean_latency_ms": 556.0,
+      "mean_changed_ratio": 0.3633,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 10
+    },
+    "local_convenience": {
+      "video": "local_convenience",
+      "path": "results/video_input_large/31494166_local_convenience.mp4",
+      "fps": 60.0,
+      "total_frames": 873,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 15,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 1,
+        "Gap": 13
+      },
+      "mean_detections": 6.4,
+      "mean_latency_ms": 574.5,
+      "mean_changed_ratio": 0.558,
+      "max_unique_seen": 29,
+      "frames_with_persisted_track": 14
+    },
+    "man_buying_portrait": {
+      "video": "man_buying_portrait",
+      "path": "results/video_input_large/7125847_man_buying_portrait.mp4",
+      "fps": 23.976023976023978,
+      "total_frames": 240,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 10,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 1,
+        "Gap": 8
+      },
+      "mean_detections": 4.0,
+      "mean_latency_ms": 701.7,
+      "mean_changed_ratio": 0.4212,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 9
+    },
+    "people_market": {
+      "video": "people_market",
+      "path": "results/video_input_large/2016738_people_market.mp4",
+      "fps": 23.976023976023978,
+      "total_frames": 228,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 10,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 9
+      },
+      "mean_detections": 13.6,
+      "mean_latency_ms": 535.6,
+      "mean_changed_ratio": 0.6076,
+      "max_unique_seen": 70,
+      "frames_with_persisted_track": 9
+    },
+    "pexels_beer_packs": {
+      "video": "pexels_beer_packs",
+      "path": "results/video_input_pexels/pexels_beer_packs_gondola_shelves_dyon_siregar_11598349.mp4",
+      "fps": 24.0,
+      "total_frames": 300,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 13,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 12
+      },
+      "mean_detections": 2.62,
+      "mean_latency_ms": 546.4,
+      "mean_changed_ratio": 0.7045,
+      "max_unique_seen": 30,
+      "frames_with_persisted_track": 1
+    },
+    "pexels_empty_shelves": {
+      "video": "pexels_empty_shelves",
+      "path": "results/video_input_pexels/pexels_supermarket_empty_shelves_cityxcape_3929080.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 380,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 13,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 12
+      },
+      "mean_detections": 0.69,
+      "mean_latency_ms": 576.2,
+      "mean_changed_ratio": 0.4868,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 0
+    },
+    "snack_aisle": {
+      "video": "snack_aisle",
+      "path": "results/video_input_large/28671127_snack_aisle.mp4",
+      "fps": 60.0,
+      "total_frames": 258,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 5,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 4
+      },
+      "mean_detections": 1.6,
+      "mean_latency_ms": 560.7,
+      "mean_changed_ratio": 0.4339,
+      "max_unique_seen": 3,
+      "frames_with_persisted_track": 3
+    },
+    "warehouse_cart": {
+      "video": "warehouse_cart",
+      "path": "results/video_input_large/7019234_warehouse_cart.mp4",
+      "fps": 25.0,
+      "total_frames": 503,
+      "width": 2048,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 21,
+      "cross_baseline": null,
+      "states": {
+        "Full": 4,
+        "Low": 1,
+        "Gap": 7,
+        "Check shelf": 9
+      },
+      "mean_detections": 5.1,
+      "mean_latency_ms": 1258.6,
+      "mean_changed_ratio": 0.3059,
+      "max_unique_seen": 11,
+      "frames_with_persisted_track": 20
+    },
+    "warehouse_organizing": {
+      "video": "warehouse_organizing",
+      "path": "results/video_input_large/6169087_warehouse_organizing.mp4",
+      "fps": 25.0,
+      "total_frames": 504,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 21,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 12,
+        "Check shelf": 8
+      },
+      "mean_detections": 3.86,
+      "mean_latency_ms": 569.5,
+      "mean_changed_ratio": 0.1863,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 20
+    },
+    "woman_juice_aisle": {
+      "video": "woman_juice_aisle",
+      "path": "results/video_input_large/29846453_woman_juice_aisle.mp4",
+      "fps": 60.0,
+      "total_frames": 310,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 6,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 1,
+        "Gap": 3,
+        "Check shelf": 1
+      },
+      "mean_detections": 5.17,
+      "mean_latency_ms": 553.9,
+      "mean_changed_ratio": 0.3702,
+      "max_unique_seen": 9,
+      "frames_with_persisted_track": 5
+    },
+    "woman_local_grocery": {
+      "video": "woman_local_grocery",
+      "path": "results/video_input_large/29814585_woman_local_grocery.mp4",
+      "fps": 60.0,
+      "total_frames": 935,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 16,
+      "cross_baseline": null,
+      "states": {
+        "Full": 4,
+        "Low": 8,
+        "Check shelf": 1,
+        "Gap": 3
+      },
+      "mean_detections": 9.06,
+      "mean_latency_ms": 609.5,
+      "mean_changed_ratio": 0.2246,
+      "max_unique_seen": 26,
+      "frames_with_persisted_track": 15
+    },
+    "woman_shopping_portrait": {
+      "video": "woman_shopping_portrait",
+      "path": "results/video_input_large/6097040_woman_shopping_portrait.mp4",
+      "fps": 23.976023976023978,
+      "total_frames": 240,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 10,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 2,
+        "Gap": 4,
+        "Check shelf": 3
+      },
+      "mean_detections": 4.2,
+      "mean_latency_ms": 572.6,
+      "mean_changed_ratio": 0.2933,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 9
+    },
+    "woman_vitamins": {
+      "video": "woman_vitamins",
+      "path": "results/video_input_large/5103996_woman_vitamins.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 479,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 16,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 13,
+        "Gap": 2
+      },
+      "mean_detections": 4.44,
+      "mean_latency_ms": 545.7,
+      "mean_changed_ratio": 0.2044,
+      "max_unique_seen": 11,
+      "frames_with_persisted_track": 15
+    }
+  },
+  "per_video_after": {
+    "books_classroom": {
+      "video": "books_classroom",
+      "path": "results/video_input_large/8363896_books_classroom.mp4",
+      "fps": 30.0,
+      "total_frames": 450,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 15,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 14
+      },
+      "mean_detections": 5.4,
+      "mean_latency_ms": 600.2,
+      "mean_changed_ratio": 0.2515,
+      "max_unique_seen": 27,
+      "frames_with_persisted_track": 13
+    },
+    "bookshelves_living": {
+      "video": "bookshelves_living",
+      "path": "results/video_input_large/10822607_bookshelves_living.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 269,
+      "width": 1080,
+      "height": 1440,
+      "sample_fps": 1.0,
+      "sampled_frames": 9,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 8
+      },
+      "mean_detections": 18.22,
+      "mean_latency_ms": 644.2,
+      "mean_changed_ratio": 0.4849,
+      "max_unique_seen": 115,
+      "frames_with_persisted_track": 7
+    },
+    "boxes_warehouse": {
+      "video": "boxes_warehouse",
+      "path": "results/video_input_large/6170316_boxes_warehouse.mp4",
+      "fps": 25.0,
+      "total_frames": 190,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 8,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 7
+      },
+      "mean_detections": 1.75,
+      "mean_latency_ms": 556.6,
+      "mean_changed_ratio": 0.21,
+      "max_unique_seen": 3,
+      "frames_with_persisted_track": 7
+    },
+    "cart_journey": {
+      "video": "cart_journey",
+      "path": "results/video_input_large/29068393_cart_journey.mp4",
+      "fps": 30.0,
+      "total_frames": 450,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 15,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 13,
+        "Gap": 1
+      },
+      "mean_detections": 0.67,
+      "mean_latency_ms": 557.3,
+      "mean_changed_ratio": 0.4673,
+      "max_unique_seen": 6,
+      "frames_with_persisted_track": 1
+    },
+    "cart_perspective": {
+      "video": "cart_perspective",
+      "path": "results/video_input_large/29376327_cart_perspective.mp4",
+      "fps": 30.0,
+      "total_frames": 324,
+      "width": 3834,
+      "height": 2160,
+      "sample_fps": 1.0,
+      "sampled_frames": 11,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 10
+      },
+      "mean_detections": 9.91,
+      "mean_latency_ms": 1277.8,
+      "mean_changed_ratio": 0.6063,
+      "max_unique_seen": 61,
+      "frames_with_persisted_track": 10
+    },
+    "chinese_supermarket": {
+      "video": "chinese_supermarket",
+      "path": "results/video_input_large/34813666_chinese_supermarket.mp4",
+      "fps": 59.94005994005994,
+      "total_frames": 340,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 6,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 5
+      },
+      "mean_detections": 3.0,
+      "mean_latency_ms": 571.3,
+      "mean_changed_ratio": 0.4122,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 4
+    },
+    "fruit_veg_aisle": {
+      "video": "fruit_veg_aisle",
+      "path": "results/video_input_large/992683_fruit_veg_aisle.mp4",
+      "fps": 25.0,
+      "total_frames": 636,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 26,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 25
+      },
+      "mean_detections": 6.54,
+      "mean_latency_ms": 588.7,
+      "mean_changed_ratio": 0.6736,
+      "max_unique_seen": 112,
+      "frames_with_persisted_track": 12
+    },
+    "fruit_veg_market": {
+      "video": "fruit_veg_market",
+      "path": "results/video_input_large/15645011_fruit_veg_market.mp4",
+      "fps": 25.0,
+      "total_frames": 477,
+      "width": 1280,
+      "height": 720,
+      "sample_fps": 1.0,
+      "sampled_frames": 20,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 19
+      },
+      "mean_detections": 10.25,
+      "mean_latency_ms": 586.6,
+      "mean_changed_ratio": 0.5158,
+      "max_unique_seen": 60,
+      "frames_with_persisted_track": 19
+    },
+    "inventory_tablet": {
+      "video": "inventory_tablet",
+      "path": "results/video_input_large/4292901_inventory_tablet.mp4",
+      "fps": 25.0,
+      "total_frames": 314,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 13,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 12
+      },
+      "mean_detections": 5.92,
+      "mean_latency_ms": 539.8,
+      "mean_changed_ratio": 0.5393,
+      "max_unique_seen": 21,
+      "frames_with_persisted_track": 12
+    },
+    "inventory_warehouse": {
+      "video": "inventory_warehouse",
+      "path": "results/video_input_large/7018670_inventory_warehouse.mp4",
+      "fps": 25.0,
+      "total_frames": 488,
+      "width": 1080,
+      "height": 2048,
+      "sample_fps": 1.0,
+      "sampled_frames": 20,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 19
+      },
+      "mean_detections": 0.6,
+      "mean_latency_ms": 1256.3,
+      "mean_changed_ratio": 0.4745,
+      "max_unique_seen": 12,
+      "frames_with_persisted_track": 0
+    },
+    "jar_shelves_portrait": {
+      "video": "jar_shelves_portrait",
+      "path": "results/video_input_large/5453398_jar_shelves_portrait.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 355,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 12,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 9,
+        "Gap": 2
+      },
+      "mean_detections": 7.08,
+      "mean_latency_ms": 564.5,
+      "mean_changed_ratio": 0.2132,
+      "max_unique_seen": 18,
+      "frames_with_persisted_track": 11
+    },
+    "library_book": {
+      "video": "library_book",
+      "path": "results/video_input_large/6550147_library_book.mp4",
+      "fps": 25.0,
+      "total_frames": 274,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 11,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 10
+      },
+      "mean_detections": 2.91,
+      "mean_latency_ms": 625.5,
+      "mean_changed_ratio": 0.3633,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 10
+    },
+    "local_convenience": {
+      "video": "local_convenience",
+      "path": "results/video_input_large/31494166_local_convenience.mp4",
+      "fps": 60.0,
+      "total_frames": 873,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 15,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 14
+      },
+      "mean_detections": 6.4,
+      "mean_latency_ms": 563.4,
+      "mean_changed_ratio": 0.558,
+      "max_unique_seen": 29,
+      "frames_with_persisted_track": 14
+    },
+    "man_buying_portrait": {
+      "video": "man_buying_portrait",
+      "path": "results/video_input_large/7125847_man_buying_portrait.mp4",
+      "fps": 23.976023976023978,
+      "total_frames": 240,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 10,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 1,
+        "Check shelf": 8
+      },
+      "mean_detections": 4.0,
+      "mean_latency_ms": 623.3,
+      "mean_changed_ratio": 0.4212,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 9
+    },
+    "people_market": {
+      "video": "people_market",
+      "path": "results/video_input_large/2016738_people_market.mp4",
+      "fps": 23.976023976023978,
+      "total_frames": 228,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 10,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 9
+      },
+      "mean_detections": 13.6,
+      "mean_latency_ms": 590.2,
+      "mean_changed_ratio": 0.6076,
+      "max_unique_seen": 70,
+      "frames_with_persisted_track": 9
+    },
+    "pexels_beer_packs": {
+      "video": "pexels_beer_packs",
+      "path": "results/video_input_pexels/pexels_beer_packs_gondola_shelves_dyon_siregar_11598349.mp4",
+      "fps": 24.0,
+      "total_frames": 300,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 13,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 12
+      },
+      "mean_detections": 2.62,
+      "mean_latency_ms": 565.6,
+      "mean_changed_ratio": 0.7045,
+      "max_unique_seen": 30,
+      "frames_with_persisted_track": 1
+    },
+    "pexels_empty_shelves": {
+      "video": "pexels_empty_shelves",
+      "path": "results/video_input_pexels/pexels_supermarket_empty_shelves_cityxcape_3929080.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 380,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 13,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 12
+      },
+      "mean_detections": 0.69,
+      "mean_latency_ms": 618.1,
+      "mean_changed_ratio": 0.4868,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 0
+    },
+    "snack_aisle": {
+      "video": "snack_aisle",
+      "path": "results/video_input_large/28671127_snack_aisle.mp4",
+      "fps": 60.0,
+      "total_frames": 258,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 5,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 4
+      },
+      "mean_detections": 1.6,
+      "mean_latency_ms": 575.5,
+      "mean_changed_ratio": 0.4339,
+      "max_unique_seen": 3,
+      "frames_with_persisted_track": 3
+    },
+    "warehouse_cart": {
+      "video": "warehouse_cart",
+      "path": "results/video_input_large/7019234_warehouse_cart.mp4",
+      "fps": 25.0,
+      "total_frames": 503,
+      "width": 2048,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 21,
+      "cross_baseline": null,
+      "states": {
+        "Full": 4,
+        "Check shelf": 17
+      },
+      "mean_detections": 5.1,
+      "mean_latency_ms": 1175.8,
+      "mean_changed_ratio": 0.3059,
+      "max_unique_seen": 11,
+      "frames_with_persisted_track": 20
+    },
+    "warehouse_organizing": {
+      "video": "warehouse_organizing",
+      "path": "results/video_input_large/6169087_warehouse_organizing.mp4",
+      "fps": 25.0,
+      "total_frames": 504,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 21,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 20
+      },
+      "mean_detections": 3.86,
+      "mean_latency_ms": 553.8,
+      "mean_changed_ratio": 0.1863,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 20
+    },
+    "woman_juice_aisle": {
+      "video": "woman_juice_aisle",
+      "path": "results/video_input_large/29846453_woman_juice_aisle.mp4",
+      "fps": 60.0,
+      "total_frames": 310,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 6,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Check shelf": 5
+      },
+      "mean_detections": 5.17,
+      "mean_latency_ms": 549.5,
+      "mean_changed_ratio": 0.3702,
+      "max_unique_seen": 9,
+      "frames_with_persisted_track": 5
+    },
+    "woman_local_grocery": {
+      "video": "woman_local_grocery",
+      "path": "results/video_input_large/29814585_woman_local_grocery.mp4",
+      "fps": 60.0,
+      "total_frames": 935,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 16,
+      "cross_baseline": null,
+      "states": {
+        "Full": 4,
+        "Low": 3,
+        "Check shelf": 9
+      },
+      "mean_detections": 9.06,
+      "mean_latency_ms": 536.8,
+      "mean_changed_ratio": 0.2246,
+      "max_unique_seen": 26,
+      "frames_with_persisted_track": 15
+    },
+    "woman_shopping_portrait": {
+      "video": "woman_shopping_portrait",
+      "path": "results/video_input_large/6097040_woman_shopping_portrait.mp4",
+      "fps": 23.976023976023978,
+      "total_frames": 240,
+      "width": 1080,
+      "height": 1920,
+      "sample_fps": 1.0,
+      "sampled_frames": 10,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 2,
+        "Check shelf": 7
+      },
+      "mean_detections": 4.2,
+      "mean_latency_ms": 588.4,
+      "mean_changed_ratio": 0.2933,
+      "max_unique_seen": 8,
+      "frames_with_persisted_track": 9
+    },
+    "woman_vitamins": {
+      "video": "woman_vitamins",
+      "path": "results/video_input_large/5103996_woman_vitamins.mp4",
+      "fps": 29.97002997002997,
+      "total_frames": 479,
+      "width": 1920,
+      "height": 1080,
+      "sample_fps": 1.0,
+      "sampled_frames": 16,
+      "cross_baseline": null,
+      "states": {
+        "Full": 1,
+        "Low": 13,
+        "Gap": 2
+      },
+      "mean_detections": 4.44,
+      "mean_latency_ms": 523.9,
+      "mean_changed_ratio": 0.2044,
+      "max_unique_seen": 11,
+      "frames_with_persisted_track": 15
+    }
+  },
+  "sources": {
+    "snack_aisle": {
+      "pexels_id": 28671127,
+      "title": "Colorful Snack Aisle in a Convenience Store",
+      "author": "LayG Traveller",
+      "url": "https://www.pexels.com/video/colorful-snack-aisle-in-a-convenience-store-28671127/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 60
+    },
+    "woman_local_grocery": {
+      "pexels_id": 29814585,
+      "title": "Young Woman Shopping in Local Grocery Store",
+      "author": "Aamir Somewhere",
+      "url": "https://www.pexels.com/video/young-woman-shopping-in-local-grocery-store-29814585/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 60
+    },
+    "woman_juice_aisle": {
+      "pexels_id": 29846453,
+      "title": "Woman Shopping in Local Supermarket Juice Aisle",
+      "author": "Aamir Somewhere",
+      "url": "https://www.pexels.com/video/woman-shopping-in-local-supermarket-juice-aisle-29846453/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 60
+    },
+    "woman_shopping_portrait": {
+      "pexels_id": 6097040,
+      "title": "A Woman Shopping on Grocery Store",
+      "author": "Laura James",
+      "url": "https://www.pexels.com/video/a-woman-shopping-on-grocery-store-6097040/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "2160x3840",
+      "page_fps": 23.98
+    },
+    "warehouse_cart": {
+      "pexels_id": 7019234,
+      "title": "A Man Looking at the Camera while Holding Shopping Cart",
+      "author": "cottonbro studio",
+      "url": "https://www.pexels.com/video/a-man-looking-at-the-camera-while-holding-shopping-cart-7019234/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "4096x2160",
+      "page_fps": 25
+    },
+    "man_buying_portrait": {
+      "pexels_id": 7125847,
+      "title": "Man Buying Grocery",
+      "author": "Michael Burrows",
+      "url": "https://www.pexels.com/video/man-buying-grocery-7125847/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "2160x3840",
+      "page_fps": 23.98
+    },
+    "cart_journey": {
+      "pexels_id": 29068393,
+      "title": "Shopping Cart Journey Through Grocery Aisle",
+      "author": "Glimpses Into Reality",
+      "url": "https://www.pexels.com/video/shopping-cart-journey-through-grocery-aisle-29068393/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1920x1080",
+      "page_fps": 30
+    },
+    "jar_shelves_portrait": {
+      "pexels_id": 5453398,
+      "title": "A Woman Reaching A Jar From The Shelves",
+      "author": "Leeloo The First",
+      "url": "https://www.pexels.com/video/a-woman-reaching-a-jar-from-the-shelves-5453398/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1080x1920",
+      "page_fps": 29.97,
+      "note": "Kitchen shelves, not a shop shelf"
+    },
+    "woman_vitamins": {
+      "pexels_id": 5103996,
+      "title": "Woman Choosing and Comparing Products in a Store",
+      "author": "Gustavo Fring",
+      "url": "https://www.pexels.com/video/woman-choosing-and-comparing-products-in-a-store-5103996/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 29.97
+    },
+    "warehouse_organizing": {
+      "pexels_id": 6169087,
+      "title": "Warehouse Worker Organizing and Checking Packages",
+      "author": "Tima Miroshnichenko",
+      "url": "https://www.pexels.com/video/warehouse-worker-organizing-and-checking-packages-6169087/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "2160x3840",
+      "page_fps": 25
+    },
+    "inventory_warehouse": {
+      "pexels_id": 7018670,
+      "title": "A Woman Doing Inventory in the Warehouse",
+      "author": "cottonbro studio",
+      "url": "https://www.pexels.com/video/a-woman-doing-inventory-in-the-warehouse-7018670/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "2160x4096",
+      "page_fps": 25
+    },
+    "boxes_warehouse": {
+      "pexels_id": 6170316,
+      "title": "Boxes and Packages on Warehouse Shelves",
+      "author": "Tima Miroshnichenko",
+      "url": "https://www.pexels.com/video/boxes-and-packages-on-warehouse-shelves-6170316/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "2160x3840",
+      "page_fps": 25
+    },
+    "fruit_veg_market": {
+      "pexels_id": 15645011,
+      "title": "A Variety of Fresh Fruit and Vegetables on Display at the Market",
+      "author": "Atlantic Ambience",
+      "url": "https://www.pexels.com/video/a-variety-of-fresh-fruit-and-vegetables-on-display-at-the-market-15645011/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1920x1080",
+      "page_fps": 25,
+      "note": "Download served 1280x720 variant, not 1920x1080"
+    },
+    "people_market": {
+      "pexels_id": 2016738,
+      "title": "People Buying Fruits and Vegetables In The Market",
+      "author": "Carlos Prieto",
+      "url": "https://www.pexels.com/video/people-buying-fruits-and-vegetables-in-the-market-2016738/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1920x1080",
+      "page_fps": 23.98
+    },
+    "fruit_veg_aisle": {
+      "pexels_id": 992683,
+      "title": "Fruits And Vegetables Aisle Footage",
+      "author": "jessica politi",
+      "url": "https://www.pexels.com/video/fruits-and-vegetables-aisle-footage-992683/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1920x1080",
+      "page_fps": 25
+    },
+    "bookshelves_living": {
+      "pexels_id": 10822607,
+      "title": "Pull out Shot of Bookshelves in a Living Room",
+      "author": "Jordann Player",
+      "url": "https://www.pexels.com/video/pull-out-shot-of-bookshelves-in-a-living-room-10822607/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1440x1920",
+      "page_fps": 29.97,
+      "note": "Living-room bookshelves, not a shop shelf"
+    },
+    "inventory_tablet": {
+      "pexels_id": 4292901,
+      "title": "Man Doing Inventory at the Warehouse in his Digital Tablet",
+      "author": "Tiger Lily",
+      "url": "https://www.pexels.com/video/man-doing-inventory-at-the-warehouse-in-his-digital-tablet-4292901/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 50,
+      "note": "Download only succeeded at fps=25 (page says 50); file is 1920x1080, 12.6 s"
+    },
+    "cart_perspective": {
+      "pexels_id": 29376327,
+      "title": "Shopping Aisle Perspective on Supermarket Essentials",
+      "author": "Dubang chang",
+      "url": "https://www.pexels.com/video/shopping-aisle-perspective-on-supermarket-essentials-29376327/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3834x2160",
+      "page_fps": 30,
+      "note": "Download only succeeded at original 3834x2160 (65 MB)"
+    },
+    "books_classroom": {
+      "pexels_id": 8363896,
+      "title": "Wooden Shelves with Books",
+      "author": "RDNE Stock project",
+      "url": "https://www.pexels.com/video/wooden-shelves-with-books-8363896/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1080x1920",
+      "page_fps": 30
+    },
+    "library_book": {
+      "pexels_id": 6550147,
+      "title": "Woman Finding a Book in a Bookshelf at the Library",
+      "author": "Tima Miroshnichenko",
+      "url": "https://www.pexels.com/video/woman-finding-a-book-in-a-bookshelf-at-the-library-6550147/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 25
+    },
+    "chinese_supermarket": {
+      "pexels_id": 34813666,
+      "title": "Exploring the Vibrant Aisles of a Chinese Supermarket",
+      "author": "LayG Traveller",
+      "url": "https://www.pexels.com/video/exploring-the-vibrant-aisles-of-a-chinese-supermarket-34813666/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 59.94
+    },
+    "local_convenience": {
+      "pexels_id": 31494166,
+      "title": "Shopping at a Local Convenience Store",
+      "author": "Aamir Somewhere",
+      "url": "https://www.pexels.com/video/shopping-at-a-local-convenience-store-31494166/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "3840x2160",
+      "page_fps": 60
+    },
+    "pexels_empty_shelves": {
+      "pexels_id": 3929080,
+      "title": "Supermarket Empty Shelves",
+      "author": "CityXcape",
+      "url": "https://www.pexels.com/video/supermarket-empty-shelves-3929080/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1920x1080",
+      "page_fps": 29.97,
+      "note": "Previously evaluated in video_input_eval.md; re-run here for uniform before/after data"
+    },
+    "pexels_beer_packs": {
+      "pexels_id": 11598349,
+      "title": "Close up of Beer Packs on Gondola Shelves",
+      "author": "Dyon Siregar",
+      "url": "https://www.pexels.com/video/close-up-of-beer-packs-on-gondola-shelves-11598349/",
+      "licence": "Pexels License: Free (as stated on page)",
+      "page_dims": "1920x1080",
+      "page_fps": 24,
+      "note": "Previously evaluated in video_input_eval.md; re-run here for uniform before/after data"
+    }
+  },
+  "failed_download": {
+    "pexels_id": 36074343,
+    "title": "Stock Clerk Organizing Grocery Store Shelves",
+    "author": "Circuit Occidental",
+    "url": "https://www.pexels.com/video/stock-clerk-organizing-grocery-store-shelves-36074343/",
+    "licence": "Pexels License: Free (as stated on page)",
+    "note": "Download endpoint returned 0 bytes for every variant tried (fps 25/29.97/30/60; 1920x864, 3840x1728, 1920x1080, 1280x576). Excluded, not evaluated."
+  },
+  "licence_note": "All videos are evaluation-only. Do not redistribute, do not push video files to GitHub, do not claim commercial rights."
+}

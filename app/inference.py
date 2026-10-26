@@ -207,7 +207,20 @@ class Detector:
             except Exception:
                 phase_response = None
                 camera_shift = None
-        if phase_response is not None and phase_response < 0.10:
+        # Slow-pan guard (added for the large video set, 26 Oct 2026):
+        # phase correlation alone misses slow pans — on 24 Pexels videos
+        # the phase guard left 50 false Gap frames, 43 of them with a
+        # camera shift >= 14.7 px, while same-scene stills measured
+        # ~0.0 px and near-fixed videos measured <= 4.9 px. A shift over
+        # 10 px therefore means the camera moved, even when phase
+        # correlation still aligns (repetitive shelf patterns). The
+        # remaining small-shift Gap frames are a different failure mode
+        # (person occlusion / momentary alignment), not camera motion.
+        shift_magnitude = None
+        if camera_shift is not None:
+            shift_magnitude = float(np.hypot(camera_shift[0], camera_shift[1]))
+        if (phase_response is not None and phase_response < 0.10) or (
+                shift_magnitude is not None and shift_magnitude > 10.0):
             state = "Check shelf"
         elif mean_shift > 60:
             state = "Check shelf"
@@ -220,7 +233,8 @@ class Detector:
         return {"state": state, "changed_ratio": changed_ratio,
                 "mean_brightness_shift": mean_shift,
                 "phase_correlation_response": phase_response,
-                "camera_shift_px": camera_shift}
+                "camera_shift_px": camera_shift,
+                "camera_shift_magnitude_px": shift_magnitude}
 
 
 def decode_image(data: bytes):
