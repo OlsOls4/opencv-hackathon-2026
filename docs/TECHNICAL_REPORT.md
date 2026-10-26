@@ -21,13 +21,45 @@
   still needs real shelf photos.
 - Dockerfile written but NOT build-tested here: Docker is not available
   in this VM. It needs a Docker test on the deploy machine.
-- GitHub push: NOT done at last update — push to
-  OlsOls4/opencv-hackathon-2026 returned 403 Resource not accessible by
-  integration (read access verified, write access missing). Repo was
-  confirmed empty at that check.
+- GitHub push: DONE 26 Oct 2026 (after the earlier 403 on the bulk
+  tree API) via single-file writes, verified back from GitHub: 39/40
+  UTF-8 files live at https://github.com/OlsOls4/opencv-hackathon-2026 .
+  Missing only .github/workflows/test.yml (CI only) — GitHub blocks
+  workflow files via API without a workflows permission, which the
+  Meta Muse AI app does not have. ONNX model is NOT committed;
+  models/download_model.py fetches it.
 - AWS deploy: NOT done. See docs/ZERO_COST_AWS.md for the App Runner
   cost math (~$10–$15 for the 27 Oct–10 Nov judging window, not $0)
   and the Lambda always-free-tier alternative, which needs rework.
+
+## Accuracy improvement — tiled inference (26 Oct 2026, verified)
+- Problem found: letterboxing a 3456x4608 vending image to 640x640
+  shrinks dense small products below reliable detection size.
+- Fix implemented in app/inference.py: adaptive detection. Live webcam
+  frames (~640px) stay single-tile for speed; images >1200px use 2x2
+  tiles, >2000px use 3x3 tiles (20% overlap, label-agnostic NMS IoU 0.5).
+- HoloSelecta first 20, same GT, same conf 0.35, local, OpenCV 5.0.0:
+  - Single-tile: MAE 38.05, pred 46 / GT 807, exact 0/20, within ±1 0/20
+  - 2x2 tiles: MAE 29.90, pred 213, mean latency 541 ms
+  - 3x3 tiles (adaptive, now default for high-res): MAE 26.35,
+    pred 310 / GT 807, exact 0/20, within ±1 0/20, bias −24.85,
+    mean latency ~1.27 s in the tiled eval file
+    (see results/holoselecta_tiled_eval_results.csv)
+- Honest limit: tiling improves counting by ~31% (MAE 38.05 → 26.35)
+  but does NOT fix it. COCO still cannot name crisps/chocolate/cans,
+  and "refrigerator" still fires for the whole machine. Counting is
+  therefore NOT presented as the primary shelf signal.
+
+## Baseline/occupancy drift — synthetic test (26 Oct 2026, verified)
+- Same image as baseline: state Full, changed_ratio 0.0 — correct.
+- Synthetic Gap: same image with a central band painted out:
+  state Low, changed_ratio 0.250, mean brightness shift 21.2 — correct
+  direction (Low, not Gap, because changed_ratio < 0.30 threshold).
+- Brightness +80: state Check shelf, changed_ratio 0.958,
+  mean shift 71.3 (>60 guard) — correct guard, not a false Gap.
+- Limit: this is a synthetic painted-band test on one vending image,
+  NOT a real before/after shelf pair. Real drift still needs Olly's
+  staged before/after shelf photos.
 
 1. Problem and primary user: independent convenience-store owner-manager,
    single shop. Shelf checks are manual and skipped; an empty facing is
