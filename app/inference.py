@@ -36,6 +36,7 @@ class Detector:
         self.conf_threshold = conf_threshold
         self._baseline_gray = None
         self._baseline_roi = None
+        self._baseline_gray_raw = None  # unblurred ROI gray, for camera-move check
 
     def letterbox(self, img):
         h, w = img.shape[:2]
@@ -155,6 +156,7 @@ class Detector:
         x1, y1, x2, y2 = int(w * roi[0]), int(h * roi[1]), int(w * roi[2]), int(h * roi[3])
         crop = img[y1:y2, x1:x2]
         gray = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+        self._baseline_gray_raw = gray
         self._baseline_gray = cv2.GaussianBlur(gray, (21, 21), 0)
         self._baseline_roi = (x1, y1, x2, y2)
         return True
@@ -168,7 +170,8 @@ class Detector:
         h, w = img.shape[:2]
         x1, y1, x2, y2 = self._baseline_roi or (int(w * roi[0]), int(h * roi[1]), int(w * roi[2]), int(h * roi[3]))
         crop = img[y1:y2, x1:x2]
-        gray = cv2.GaussianBlur(cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY), (21, 21), 0)
+        gray_raw = cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray_raw, (21, 21), 0)
         # Resize baseline if frame size changed.
         if gray.shape != self._baseline_gray.shape:
             base = cv2.resize(self._baseline_gray, (gray.shape[1], gray.shape[0]))
@@ -180,7 +183,33 @@ class Detector:
         changed_ratio = float(np.count_nonzero(thresh) / thresh.size) if thresh.size else 0.0
         # Lighting / camera-move guard: large mean brightness shift -> Check shelf.
         mean_shift = abs(float(np.mean(gray)) - float(np.mean(base)))
-        if mean_shift > 60:
+        # Camera-move / scene-change guard (added for video input, 26 Oct 2026):
+        # phase-correlation response between the baseline ROI and the current
+        # ROI. Same scene, even with a 50px shift, a +80 brightness change, or
+        # a whole-row removal, measured 0.18-1.0 locally (narrow single-shelf
+        # ROI row removal: 0.182); moving-camera video frames measured
+        # 0.008-0.071 and a different shelf photo -0.008. Below 0.10 the frame
+        # does not align with the baseline, so a Gap claim would be a
+        # camera-move false alarm — return Check shelf instead. The margin
+        # is narrow (0.071 vs 0.182), so this guard is conservative and is
+        # documented as such, not as a solved camera-motion problem.
+        phase_response = None
+        camera_shift = None
+        if self._baseline_gray_raw is not None:
+            try:
+                base_raw = self._baseline_gray_raw
+                if gray_raw.shape != base_raw.shape:
+                    base_raw = cv2.resize(base_raw, (gray_raw.shape[1], gray_raw.shape[0]))
+                shift, phase_response = cv2.phaseCorrelate(
+                    np.float32(base_raw), np.float32(gray_raw))
+                phase_response = float(phase_response)
+                camera_shift = (float(shift[0]), float(shift[1]))
+            except Exception:
+                phase_response = None
+                camera_shift = None
+        if phase_response is not None and phase_response < 0.10:
+            state = "Check shelf"
+        elif mean_shift > 60:
             state = "Check shelf"
         elif changed_ratio < 0.10:
             state = "Full"
@@ -188,7 +217,10 @@ class Detector:
             state = "Low"
         else:
             state = "Gap"
-        return {"state": state, "changed_ratio": changed_ratio, "mean_brightness_shift": mean_shift}
+        return {"state": state, "changed_ratio": changed_ratio,
+                "mean_brightness_shift": mean_shift,
+                "phase_correlation_response": phase_response,
+                "camera_shift_px": camera_shift}
 
 
 def decode_image(data: bytes):

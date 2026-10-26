@@ -1,0 +1,69 @@
+{
+  "getty_aisle": {
+    "video": "getty_aisle",
+    "path": "results/video_input/getty_aisle.mp4",
+    "fps": 23.976023976023978,
+    "total_frames": 457,
+    "width": 768,
+    "height": 432,
+    "sample_fps": 1.0,
+    "sampled_frames": 20,
+    "cross_baseline": null,
+    "states": {
+      "Full": 1,
+      "Check shelf": 19
+    },
+    "mean_detections": 0.1,
+    "mean_latency_ms": 159.6,
+    "mean_changed_ratio": 0.6354,
+    "max_unique_seen": 2,
+    "frames_with_persisted_track": 0
+  },
+  "covid_empty_shelves": {
+    "video": "covid_empty_shelves",
+    "path": "results/video_input/covid_empty_shelves.mp4",
+    "fps": 29.977628635346758,
+    "total_frames": 134,
+    "width": 686,
+    "height": 1280,
+    "sample_fps": 2.0,
+    "sampled_frames": 9,
+    "cross_baseline": null,
+    "states": {
+      "Full": 1,
+      "Check shelf": 8
+    },
+    "mean_detections": 0.33,
+    "mean_latency_ms": 553.6,
+    "mean_changed_ratio": 0.5788,
+    "max_unique_seen": 3,
+    "frames_with_persisted_track": 0
+  },
+  "covid_cross": {
+    "video": "covid_cross",
+    "path": "results/video_input/covid_empty_shelves.mp4",
+    "fps": 29.977628635346758,
+    "total_frames": 134,
+    "width": 686,
+    "height": 1280,
+    "sample_fps": 2.0,
+    "sampled_frames": 9,
+    "cross_baseline": "results/real_shelf_images/lemonade_bottles.jpg",
+    "states": {
+      "Check shelf": 9
+    },
+    "mean_detections": 0.33,
+    "mean_latency_ms": 593.9,
+    "mean_changed_ratio": 0.69,
+    "max_unique_seen": 3,
+    "frames_with_persisted_track": 0
+  },
+  "constructed_fixed_camera": {
+    "sampled_frames": 6,
+    "states": {
+      "Full": 3,
+      "Gap": 3
+    },
+    "note": "Built from real stills: lemonade full 0-3s, gap_row 3-6s, 10fps, single-shelf ROI"
+  }
+}
