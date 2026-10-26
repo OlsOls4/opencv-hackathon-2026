@@ -219,3 +219,11 @@
     cookie boxes are read as "cell phone", and cans/bottles as
     "refrigerator"/"cup", so no threshold fixes the undercount; counting
     remains a secondary signal behind baseline drift.
+
+## Live full OpenCV endpoint on AWS EC2 — verified 26 Oct 2026
+- EC2: shelfscan-ec2, i-08fc2ac1d0224790b, t3.micro, eu-north-1, Amazon Linux 2023, running, left running through judging (stop/terminate after 10 Nov 2026).
+- Public endpoint: http://16.171.250.54:8000 — /health and /api/demo, no app sign-in.
+- Docker build test PASSED on EC2: Dockerfile from repo main, exit 0, image shelfscan:latest 387 MB, container Up.
+- Verified from outside AWS (26 Oct 2026, 22:19 GMT): /health 200, OpenCV 5.0.0, model_loaded true; /api/demo 200, Low, changed 0.216, latency 162.1 ms.
+- Caveats: security group opens TCP 8000 and 22 to 0.0.0.0/0 for demo only — restrict after judging, especially 22. Free-tier cover through 10 Nov is not confirmed from billing; list price 0.0108 USD/hour, account credits shown $120 at that check, current month $0.00. Muse browser itself refused port 8000 (ERR_CONNECTION_REFUSED) while CloudShell and an outside host returned 200 — cause unproven, judges should try from their own browser.
+- This EC2 endpoint, not the Lambda demo, is the full OpenCV app on AWS. Lambda demo-only endpoint remains as a secondary judge link.
