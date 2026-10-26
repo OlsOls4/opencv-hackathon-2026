@@ -1,0 +1,149 @@
+{
+  "opencv": "5.0.0",
+  "roi": [
+    0.05,
+    0.1,
+    0.95,
+    0.9
+  ],
+  "method": "Simulated gap on a real photo: contiguous block removed, filled with cloned shelf back-panel (strip above block, stretched vertically, noise sigma 5, 6px feather) or cv2.inpaint Telea. NOT a photo of a real removal.",
+  "gap_blocks": [
+    {
+      "baseline": "lemonade_bottles.jpg",
+      "variant": "gap_central_clone",
+      "block_xywh_frac": [
+        0.35,
+        0.3792808219178082,
+        0.5796875,
+        0.6498287671232876
+      ],
+      "note": "middle-row central block, cloned back-panel"
+    },
+    {
+      "baseline": "lemonade_bottles.jpg",
+      "variant": "gap_full_row_clone",
+      "block_xywh_frac": [
+        0.019791666666666666,
+        0.3792808219178082,
+        0.9796875,
+        0.6498287671232876
+      ],
+      "note": "entire middle row, cloned back-panel"
+    },
+    {
+      "baseline": "lemonade_bottles.jpg",
+      "variant": "gap_central_inpaint_telea",
+      "block_xywh_frac": [
+        0.35,
+        0.38,
+        0.58,
+        0.65
+      ],
+      "note": "middle-row central block, cv2.inpaint Telea r=15"
+    },
+    {
+      "baseline": "soda_cans.jpg",
+      "variant": "gap_central_clone",
+      "block_xywh_frac": [
+        0.31979166666666664,
+        0.35,
+        0.6796875,
+        0.6796296296296296
+      ],
+      "note": "front-row central block, cloned blurred background strip"
+    }
+  ],
+  "results": [
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "gap_central_clone",
+      "method": "middle-row central block, cloned back-panel",
+      "changed_ratio": 0.0385,
+      "mean_brightness_shift": 3.41,
+      "state": "Full"
+    },
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "gap_full_row_clone",
+      "method": "entire middle row, cloned back-panel",
+      "changed_ratio": 0.2021,
+      "mean_brightness_shift": 20.79,
+      "state": "Low"
+    },
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "gap_central_inpaint_telea",
+      "method": "middle-row central block, cv2.inpaint Telea r=15",
+      "changed_ratio": 0.0397,
+      "mean_brightness_shift": 3.05,
+      "state": "Full"
+    },
+    {
+      "baseline_photo": "soda_cans.jpg",
+      "variant": "gap_central_clone",
+      "method": "front-row central block, cloned blurred background strip",
+      "changed_ratio": 0.1015,
+      "mean_brightness_shift": 1.42,
+      "state": "Low"
+    },
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "control_same_image",
+      "method": "identical image",
+      "changed_ratio": 0.0,
+      "mean_brightness_shift": 0.0,
+      "state": "Full"
+    },
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "control_brightness_+80",
+      "method": "global brightness +80",
+      "changed_ratio": 0.9554,
+      "mean_brightness_shift": 70.17,
+      "state": "Check shelf"
+    },
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "control_brightness_+20",
+      "method": "global brightness +20",
+      "changed_ratio": 0.0,
+      "mean_brightness_shift": 19.87,
+      "state": "Full"
+    },
+    {
+      "baseline_photo": "soda_cans.jpg",
+      "variant": "control_same_image",
+      "method": "identical image",
+      "changed_ratio": 0.0,
+      "mean_brightness_shift": 0.0,
+      "state": "Full"
+    }
+  ],
+  "results_single_shelf_roi": [
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "gap_central_clone",
+      "method": "middle-row central block, cloned back-panel; ROI=middle row only (0.02,0.36,0.98,0.70)",
+      "changed_ratio": 0.0851,
+      "mean_brightness_shift": 7.54,
+      "state": "Full"
+    },
+    {
+      "baseline_photo": "lemonade_bottles.jpg",
+      "variant": "gap_full_row_clone",
+      "method": "entire middle row, cloned back-panel; ROI=middle row only (0.02,0.36,0.98,0.70)",
+      "changed_ratio": 0.4864,
+      "mean_brightness_shift": 50.85,
+      "state": "Gap"
+    },
+    {
+      "baseline_photo": "soda_cans.jpg",
+      "variant": "gap_central_clone",
+      "method": "front-row central block, cloned blurred background; ROI=front row (0.02,0.30,0.98,0.82)",
+      "changed_ratio": 0.1466,
+      "mean_brightness_shift": 2.06,
+      "state": "Low"
+    }
+  ],
+  "key_finding": "With the default whole-image ROI, even removing an entire middle row only reaches Low (0.2021). With the intended single-shelf ROI (middle row only), the same removal reaches Gap (0.4864, mean shift 50.85, below the 60 guard). A central block alone stays Full (0.0851) on the middle-row ROI and Full (0.0385) on the whole-image ROI."
+}

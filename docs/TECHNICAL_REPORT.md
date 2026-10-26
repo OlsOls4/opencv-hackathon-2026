@@ -91,6 +91,26 @@
   NOT a real before/after shelf pair. Real drift still needs Olly's
   staged before/after shelf photos.
 
+## Baseline/occupancy drift — real-photo SIMULATED gap (26 Oct 2026, verified)
+- SIMULATED gap, not a real removal: a real Pexels shelf photo
+  (lemonade_bottles.jpg, 88 hand-counted) with a contiguous block
+  digitally removed and filled with cloned shelf back-panel
+  (see results/real_drift_pair.md). Full method, images local only.
+- Default whole-image ROI: central block 0.0385 Full; entire middle
+  row removed 0.2021 Low; soda_cans central block 0.1015 Low.
+  Controls: same image 0.0 Full; brightness +80 Check shelf
+  (0.9554, shift 70.17); brightness +20 Full (0.0, shift 19.87).
+- Single-shelf ROI (intended deployment, one shelf one ROI):
+  middle-row ROI, entire middle row removed = **Gap, 0.4864,
+  mean shift 50.85** (below the 60 guard); central block alone =
+  0.0851 Full. Soda front-row ROI central block = 0.1466 Low.
+- Honest limit: Gap is observable on a real photo ONLY with a
+  single-shelf ROI and only for a whole-row removal; small central
+  gaps are missed by drift alone, dark bottles vs dark back-panel
+  suppresses diff, and the 50.85 mean shift is close to the Check
+  guard. No threshold was changed for this test. A real physical
+  removal pair is still untested.
+
 1. Problem and primary user: independent convenience-store owner-manager,
    single shop. Shelf checks are manual and skipped; an empty facing is
    often found by a customer, not staff.

@@ -1,0 +1,12 @@
+baseline_photo,variant,method,changed_ratio,mean_brightness_shift,state
+lemonade_bottles.jpg,gap_central_clone,"middle-row central block, cloned back-panel",0.0385,3.41,Full
+lemonade_bottles.jpg,gap_full_row_clone,"entire middle row, cloned back-panel",0.2021,20.79,Low
+lemonade_bottles.jpg,gap_central_inpaint_telea,"middle-row central block, cv2.inpaint Telea r=15",0.0397,3.05,Full
+soda_cans.jpg,gap_central_clone,"front-row central block, cloned blurred background strip",0.1015,1.42,Low
+lemonade_bottles.jpg,control_same_image,identical image,0.0,0.0,Full
+lemonade_bottles.jpg,control_brightness_+80,global brightness +80,0.9554,70.17,Check shelf
+lemonade_bottles.jpg,control_brightness_+20,global brightness +20,0.0,19.87,Full
+soda_cans.jpg,control_same_image,identical image,0.0,0.0,Full
+lemonade_bottles.jpg,gap_central_clone,"middle-row central block, cloned back-panel; ROI=middle row only (0.02,0.36,0.98,0.70)",0.0851,7.54,Full
+lemonade_bottles.jpg,gap_full_row_clone,"entire middle row, cloned back-panel; ROI=middle row only (0.02,0.36,0.98,0.70)",0.4864,50.85,Gap
+soda_cans.jpg,gap_central_clone,"front-row central block, cloned blurred background; ROI=front row (0.02,0.30,0.98,0.82)",0.1466,2.06,Low
