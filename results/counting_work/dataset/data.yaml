@@ -1,0 +1,5 @@
+path: /home/hatch/workspace/shelfscan-build/results/counting_work/dataset
+train: images/train
+val: images/val
+nc: 1
+names: ['product']
