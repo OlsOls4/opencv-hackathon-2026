@@ -1,0 +1,6 @@
+.venv
+.export-venv
+__pycache__
+eval/raw
+*.mp4
+.env
