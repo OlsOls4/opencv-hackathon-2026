@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ShelfScan — one shelf, live inventory</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><main>
+<h1>ShelfScan</h1>
+<p>One shelf, one camera, one area. Baseline a full shelf, then watch Full / Low / Gap / Check shelf. Demo mode needs no webcam.</p>
+<div id="status" role="status">Model: yolo26n.onnx · OpenCV 5.0.0 · Inference runs on the server, not in your browser.</div>
+<section><img id="view" alt="Annotated shelf view" src="">
+<video id="video" autoplay muted playsinline style="display:none"></video><canvas id="canvas" style="display:none"></canvas></section>
+<section class="controls">
+<button id="demoBtn">Try demo shelf</button>
+<button id="camBtn">Start webcam</button>
+<button id="baseBtn">Capture baseline (full shelf)</button>
+<button id="snapBtn">Segment snapshot (GrabCut)</button>
+<button id="resetBtn">Reset session</button>
+<label>Confidence <input id="conf" type="range" min="0.25" max="0.60" step="0.05" value="0.35"> <span id="confVal">0.35</span></label>
+<label>Upload image/video <input id="upload" type="file" accept="image/*,video/*"></label>
+<button id="csvBtn">Download CSV</button>
+</section>
+<section id="result"><h2>Live counts</h2><p id="state">State: —</p><p id="counts">—</p><p id="latency">—</p><p id="err"></p></section>
+</main><script src="/static/app.js"></script></body></html>
