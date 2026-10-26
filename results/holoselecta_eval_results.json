@@ -1,0 +1,254 @@
+{
+  "metrics": {
+    "n_images": 20,
+    "total_gt_boxes": 807,
+    "total_predicted": 46,
+    "mae": 38.05,
+    "exact_match_rate": 0.0,
+    "within_plus_minus_1_rate": 0.0,
+    "mean_bias_pred_minus_true": -38.05,
+    "mean_latency_ms": 163.6,
+    "median_latency_ms": 142.4,
+    "note": "Counting only. No product labelling accuracy claimed: COCO classes do not match 109 GTIN products. Vending-domain transfer, not a shelf proxy."
+  },
+  "rows": [
+    {
+      "image": "20190125_114246.jpg",
+      "true_count": 37,
+      "predicted_count": 9,
+      "abs_error": 28,
+      "error": -28,
+      "latency_ms": 251.7,
+      "predicted_labels": {
+        "refrigerator": 1,
+        "bottle": 8
+      },
+      "gt_distinct_products": 29
+    },
+    {
+      "image": "IMG_20190306_173149.jpg",
+      "true_count": 26,
+      "predicted_count": 9,
+      "abs_error": 17,
+      "error": -17,
+      "latency_ms": 148.7,
+      "predicted_labels": {
+        "refrigerator": 2,
+        "bottle": 7
+      },
+      "gt_distinct_products": 17
+    },
+    {
+      "image": "IMG_20190306_173408.jpg",
+      "true_count": 36,
+      "predicted_count": 9,
+      "abs_error": 27,
+      "error": -27,
+      "latency_ms": 130.2,
+      "predicted_labels": {
+        "refrigerator": 1,
+        "bottle": 8
+      },
+      "gt_distinct_products": 29
+    },
+    {
+      "image": "IMG_20190307_152734.jpg",
+      "true_count": 39,
+      "predicted_count": 1,
+      "abs_error": 38,
+      "error": -38,
+      "latency_ms": 508.7,
+      "predicted_labels": {
+        "refrigerator": 1
+      },
+      "gt_distinct_products": 35
+    },
+    {
+      "image": "IMG_20190402_110254.jpg",
+      "true_count": 43,
+      "predicted_count": 0,
+      "abs_error": 43,
+      "error": -43,
+      "latency_ms": 101.7,
+      "predicted_labels": {},
+      "gt_distinct_products": 38
+    },
+    {
+      "image": "IMG_20190409_112103.jpg",
+      "true_count": 43,
+      "predicted_count": 1,
+      "abs_error": 42,
+      "error": -42,
+      "latency_ms": 148.6,
+      "predicted_labels": {
+        "refrigerator": 1
+      },
+      "gt_distinct_products": 37
+    },
+    {
+      "image": "IMG_20190430_105754.jpg",
+      "true_count": 43,
+      "predicted_count": 3,
+      "abs_error": 40,
+      "error": -40,
+      "latency_ms": 104.3,
+      "predicted_labels": {
+        "refrigerator": 2,
+        "bottle": 1
+      },
+      "gt_distinct_products": 39
+    },
+    {
+      "image": "IMG_20190430_105805.jpg",
+      "true_count": 43,
+      "predicted_count": 0,
+      "abs_error": 43,
+      "error": -43,
+      "latency_ms": 111.0,
+      "predicted_labels": {},
+      "gt_distinct_products": 39
+    },
+    {
+      "image": "IMG_20190430_105808.jpg",
+      "true_count": 44,
+      "predicted_count": 1,
+      "abs_error": 43,
+      "error": -43,
+      "latency_ms": 137.6,
+      "predicted_labels": {
+        "refrigerator": 1
+      },
+      "gt_distinct_products": 40
+    },
+    {
+      "image": "IMG_20190430_110010.jpg",
+      "true_count": 45,
+      "predicted_count": 1,
+      "abs_error": 44,
+      "error": -44,
+      "latency_ms": 109.3,
+      "predicted_labels": {
+        "refrigerator": 1
+      },
+      "gt_distinct_products": 40
+    },
+    {
+      "image": "IMG_20190430_110145.jpg",
+      "true_count": 43,
+      "predicted_count": 2,
+      "abs_error": 41,
+      "error": -41,
+      "latency_ms": 131.4,
+      "predicted_labels": {
+        "refrigerator": 1,
+        "bottle": 1
+      },
+      "gt_distinct_products": 39
+    },
+    {
+      "image": "IMG_20190430_110149.jpg",
+      "true_count": 44,
+      "predicted_count": 2,
+      "abs_error": 42,
+      "error": -42,
+      "latency_ms": 147.2,
+      "predicted_labels": {
+        "refrigerator": 2
+      },
+      "gt_distinct_products": 39
+    },
+    {
+      "image": "IMG_20190430_110153.jpg",
+      "true_count": 43,
+      "predicted_count": 0,
+      "abs_error": 43,
+      "error": -43,
+      "latency_ms": 118.7,
+      "predicted_labels": {},
+      "gt_distinct_products": 38
+    },
+    {
+      "image": "IMG_20190430_110231.jpg",
+      "true_count": 43,
+      "predicted_count": 2,
+      "abs_error": 41,
+      "error": -41,
+      "latency_ms": 158.5,
+      "predicted_labels": {
+        "refrigerator": 2
+      },
+      "gt_distinct_products": 39
+    },
+    {
+      "image": "IMG_20190430_110329.jpg",
+      "true_count": 45,
+      "predicted_count": 2,
+      "abs_error": 43,
+      "error": -43,
+      "latency_ms": 162.3,
+      "predicted_labels": {
+        "refrigerator": 1,
+        "bottle": 1
+      },
+      "gt_distinct_products": 40
+    },
+    {
+      "image": "IMG_20190430_110417.jpg",
+      "true_count": 44,
+      "predicted_count": 1,
+      "abs_error": 43,
+      "error": -43,
+      "latency_ms": 216.0,
+      "predicted_labels": {
+        "refrigerator": 1
+      },
+      "gt_distinct_products": 40
+    },
+    {
+      "image": "IMG_20190430_111230.jpg",
+      "true_count": 32,
+      "predicted_count": 1,
+      "abs_error": 31,
+      "error": -31,
+      "latency_ms": 173.0,
+      "predicted_labels": {
+        "refrigerator": 1
+      },
+      "gt_distinct_products": 31
+    },
+    {
+      "image": "IMG_20190430_111456.jpg",
+      "true_count": 31,
+      "predicted_count": 1,
+      "abs_error": 30,
+      "error": -30,
+      "latency_ms": 181.3,
+      "predicted_labels": {
+        "bottle": 1
+      },
+      "gt_distinct_products": 30
+    },
+    {
+      "image": "IMG_20190430_111521.jpg",
+      "true_count": 41,
+      "predicted_count": 0,
+      "abs_error": 41,
+      "error": -41,
+      "latency_ms": 118.7,
+      "predicted_labels": {},
+      "gt_distinct_products": 37
+    },
+    {
+      "image": "IMG_20190430_111555.jpg",
+      "true_count": 42,
+      "predicted_count": 1,
+      "abs_error": 41,
+      "error": -41,
+      "latency_ms": 113.7,
+      "predicted_labels": {
+        "refrigerator": 1
+      },
+      "gt_distinct_products": 31
+    }
+  ]
+}
