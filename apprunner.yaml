@@ -1,0 +1,17 @@
+# AWS App Runner service config — PREPARED ONLY, not deployed.
+# Region: eu-west-2 (London). Size: 2 vCPU / 4 GB to start.
+# After Devpost submission: disable auto-deploy / pin to the submitted commit.
+version: 1.0
+runtime: docker
+build:
+  commands:
+    build:
+      - docker build -t shelfscan .
+run:
+  runtime-version: latest
+  command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+  network:
+    port: 8000
+  health-check:
+    path: /health
+    protocol: HTTP
