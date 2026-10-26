@@ -1,0 +1,8 @@
+.venv/
+.export-venv/
+__pycache__/
+*.pyc
+.env
+uploads/
+*.mp4
+models/*.pt
