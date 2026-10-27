@@ -10,8 +10,9 @@ webcam and shows Full / Low / Gap / Check shelf states on a dashboard.
    state (Low, changed 0.216, re-verified 27 Oct 2026 00:22 GMT).
 To use the webcam dashboard, baseline, and restock flow with your own
 camera, run the full FastAPI app from this repo locally; see
-"How to run" below. Demo video (2:41, counting + shelf state):
-https://www.youtube.com/watch?v=YMC0FekW6sg — Devpost project:
+"How to run" below. Demo video (2:00, counting + shelf state, no
+burned-in subtitles, captions via YouTube):
+https://www.youtube.com/watch?v=62QhywyJCFQ — Devpost project:
 https://devpost.com/software/shelfscan-tm39q7
 
 **Honest scope (v1):** Baseline a full shelf, then live Full / Low / Gap /
@@ -22,10 +23,9 @@ no POS, no mobile app, no login, no COOL/Agentic special awards.
 What is new here is scope and signal hierarchy, not a new algorithm:
 one fixed ROI, drift as primary, counting as a single-class
 "product" estimate (MAE 7.0 on 5 held-out real shelf photos, no brand
-or SKU — see docs/TECHNICAL_REPORT.md §12). The live dashboard still
-shows generic COCO labels for detections, which can misname packaged
-goods; the single-class counter is validated offline and is not yet
-wired into that dashboard.
+or SKU — see docs/TECHNICAL_REPORT.md §12). Counting on the live
+dashboard is single-class "product" only; no COCO labels are shown
+on the dashboard.
 A secondary demo-only JSON link is
 https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/
 — it returns JSON only, runs no OpenCV inference, and has no webcam,
@@ -44,10 +44,10 @@ if the shelf is full. The item count is a secondary estimate only
 stock or ordering.
 
 **Restock flow:** 1) Restock the shelf fully. 2) Click
-"Capture baseline (full shelf) — use after restocking" with the webcam
-running. 3) The state should return to Full. There is no separate
-restock button — re-baselining is the restock confirmation, and it
-also clears any active in-dashboard alert.
+"✓ Restock complete — capture full shelf", or "Set full shelf from
+a photo" (no camera needed). 3) The state should return to Full.
+Re-baselining is the restock confirmation, and it also clears any
+active in-dashboard alert.
 
 **Alerts (in-dashboard only):** a Gap or Low state sustained for 5
 consecutive processed frames records an alert, shown as a banner in
@@ -75,6 +75,7 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python -c "import cv2; print(cv2.__version__)"   # must print 5.0.0
 python models/download_model.py   # only if models/yolo26n.onnx is missing
+python models/download_product_model.py  # verifies product model SHA256; prints retrain steps if the local-only ONNX is absent — counting is then disabled, never falls back to COCO
 python scripts/smoke_test.py       # with server running, see below
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 docker build -t shelfscan . && docker run -p 8000:8000 shelfscan

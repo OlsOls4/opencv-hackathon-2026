@@ -1,4 +1,4 @@
-# ShelfScan — Technical Report (draft, real before/after drift still pending)
+# ShelfScan — Technical Report
 
 > Status at submission: counting single-class product, n=5, MAE 7.0
 > (§12); drift Gap 0.4864 simulated, single-shelf ROI only; no shop
@@ -9,8 +9,9 @@
 > What is new here is scope and signal hierarchy, not a new algorithm:
 > one fixed ROI, baseline/occupancy drift as primary, generic YOLO
 > counting demoted to secondary because COCO cannot name packaged
-> goods. The pipeline itself uses standard OpenCV techniques and an
-> off-the-shelf COCO model.
+> goods. The pipeline itself uses standard OpenCV techniques and a
+> single-class product model fine-tuned on HoloSelecta (§12); COCO
+> figures in §7/§11 are legacy evaluation only.
 
 ## Live AWS demo endpoint — demo-only (26 Oct 2026)
 - Live AWS endpoint: https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/ — AWS Lambda function shelfscan-demo in eu-north-1, via a public Function URL. Only /health and /api/demo are exposed on this endpoint.
