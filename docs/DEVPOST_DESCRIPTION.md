@@ -18,12 +18,17 @@ shelf and tells the shopkeeper, in plain words, whether that shelf is
 Full, Low, has a Gap, or needs a Check — so an empty facing is found
 by staff, not by a customer.
 
+The inversion: most shelf tools lead with counting. ShelfScan leads
+with change — how much this shelf differs from its own full baseline
+— and treats counting as a rough second signal. That is the whole
+design bet.
+
 ## Try it in 30 seconds (JSON check, no camera needed)
 
 A. Open the live full app on AWS EC2: http://16.171.250.54:8000
 B. Open http://16.171.250.54:8000/health — it returns OpenCV 5.0.0.
 C. Open http://16.171.250.54:8000/api/demo — it returns the demo
-   shelf state (Low, changed 0.216, re-verified 27 Oct 2026 00:22 GMT).
+   shelf state (Low, changed 0.216, re-verified 27 Oct 2026 05:27 GMT).
 
 ## Try the full flow (no camera needed)
 
@@ -44,7 +49,8 @@ needed for a live webcam.
   is still pending. Hand-count uncertainty is about ±5 on
   lemonade, ±4 on soda, ±3 on bleach.
 - False Gaps 50 → 5 on 24 videos / 322 frames, with phase +
-  shift guards. No shop pilot.
+  shift guards. No shop pilot. Impact claims in this submission
+  describe intended use, not measured shop results.
 - **Trust it only to flag a whole-row gap on one fixed-camera
   shelf. Do NOT use its count for stock or ordering.**
 
@@ -61,7 +67,9 @@ for brand or barcode recognition.
 
 ## How it works — one journey, start to finish
 
-1. Point a fixed camera at one shelf and capture a "full" baseline.
+1. Point a fixed camera at one shelf and capture a "full" baseline
+   — or, on this HTTP demo page, use "Set full shelf from a photo"
+   (see "Try the full flow" above).
 2. ShelfScan compares each new frame with that baseline and shows
    one of four states:
    - **Full** — the shelf looks like the full baseline, no action.
@@ -75,9 +83,14 @@ for brand or barcode recognition.
 4. Restock the shelf fully, capture a new baseline, and the state
    returns to Full. That re-baseline is the restock confirmation.
 
+What changes for the shopkeeper: morning, capture the full shelf
+once. During the day, glance at one word — Full, Low, Gap, Check —
+instead of walking the aisle to look. Only a Gap or Low held for 5
+frames raises an alert. Restock, re-capture the baseline, done.
+
 ## What is new here
 
-Scope and signal hierarchy, not a new algorithm. Most shelf tools
+The innovation is the inversion, not a new model. Most shelf tools
 lead with counting products. ShelfScan leads with baseline and
 occupancy drift — how much the shelf has changed from its full
 baseline — because a generic product counter cannot reliably name
@@ -85,12 +98,23 @@ packaged goods (see "Evidence, honestly" below). Counting is kept
 secondary, single-class "product" only, no brand/SKU, never a stock
 count.
 
+Three decisions, each testable: (1) baseline drift is the primary
+Gap signal, counting is secondary; (2) one class, "product," no
+brand or SKU — trained on vending images, tested on real shelf
+photos (MAE 7.0, n=5, estimate only); (3) conservative guards —
+lighting and camera-move both fall back to Check, and alerts need
+5 consecutive frames.
+
 Two camera guards stop the commonest false alarms. A brightness
 guard sends large lighting changes to Check shelf instead of Gap,
 and a camera-move guard (phase correlation plus camera-shift
 measurement) sends moving-camera footage to Check shelf instead
 of Gap. A shelf that is genuinely emptied while the camera also
 moves will conservatively report Check shelf, not Gap.
+
+When ShelfScan is unsure, it says Check shelf — not Gap — so staff
+are not sent to restock a shelf that is actually full. A false
+restock trip is the cost this design is built to avoid.
 
 ## How it is built (brief)
 
@@ -186,12 +210,16 @@ Counting — an estimate, not an exact stock count:
 
 - Expand the boxed shelf training set (500–1000 boxed shelf
   images, with a held-out shelf test set) before claiming
-  counting beyond the current estimate.
+  counting beyond the current MAE 7.0 estimate.
 - Add person-occlusion handling so a person reaching for a
   product does not flash Gap.
 - Run a real shop pilot with a fixed camera, a real
   before/after removal pair, and owner feedback on whether
-  alerts are trusted and acted on.
+  alerts are trusted and acted on — measuring three things not
+  yet measured: facings caught before a customer reports them,
+  manual shelf checks avoided, and false alerts per week.
+  Until then, impact above is intended use, not measured
+  outcome.
 
 ## Video
 
@@ -206,7 +234,7 @@ not a stock count.
 - Code: https://github.com/OlsOls4/opencv-hackathon-2026
 - Technical report: docs/TECHNICAL_REPORT.md in the repository
 - Architecture diagram: docs/architecture.svg in the repository
-- Submission file: shelfscan-submission-v2.zip (Additional info)
+- Submission file: shelfscan-submission-v4.zip (Additional info)
 
 ## Built with
 

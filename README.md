@@ -7,7 +7,7 @@ webcam and shows Full / Low / Gap / Check shelf states on a dashboard.
 1. Open the live full app on AWS EC2: http://16.171.250.54:8000
 2. Open http://16.171.250.54:8000/health — it returns OpenCV 5.0.0.
 3. Open http://16.171.250.54:8000/api/demo — it returns the demo shelf
-   state (Low, changed 0.216, re-verified 27 Oct 2026 00:22 GMT).
+   state (Low, changed 0.216, re-verified 27 Oct 2026 05:27 GMT).
 To use the webcam dashboard, baseline, and restock flow with your own
 camera, run the full FastAPI app from this repo locally; see
 "How to run" below. Demo video (2:00, counting + shelf state, no
