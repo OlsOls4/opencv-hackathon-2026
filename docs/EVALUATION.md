@@ -1,4 +1,6 @@
-# Evaluation (plan — not yet run on real shelf photos)
+# Evaluation — original plan, now superseded by the run results in docs/TECHNICAL_REPORT.md §7/§11 (COCO legacy) and §12 (single-class product counting, MAE 7.0, n=5)
+
+Note: this plan predates the evaluation run; do not read its "not yet run" framing as current — the results are in the technical report.
 
 Freeze code, dependencies, model, threshold, and sample lists before running.
 Use scripts/evaluate.py; never hand-edit results/eval_results.json.

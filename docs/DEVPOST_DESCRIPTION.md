@@ -74,7 +74,7 @@ for brand or barcode recognition.
      state; fix the camera or lighting, then re-capture the baseline.
 3. A Gap or Low state held for 5 consecutive frames raises an
    in-dashboard alert (banner, session history, CSV export). There
-   is no SMS, email, push, or sound alert in v1.
+   is no SMS, email, push, or sound alert in this version.
 4. Restock the shelf fully, capture a new baseline, and the state
    returns to Full. That re-baseline is the restock confirmation.
 
@@ -122,9 +122,7 @@ restock trip is the cost this design is built to avoid.
 - AWS: full app on EC2 (t3.micro, eu-north-1, Docker image built
   from the repository Dockerfile, 399 MB, build passed on EC2).
   A Lambda demo-only endpoint is kept as a secondary link only.
-- Tests: 39 passed locally.
-  Pinned dependencies, SHA256-verified model download,
-  reproducible run instructions in the README.
+- Tests: 39 passed locally, with pinned dependencies, SHA256-verified model download, and reproducible run instructions in the README.
 
 ## Evidence, honestly
 

@@ -138,7 +138,7 @@
    alternative only. Docker/CloudWatch/S3 and billing alarm details: see
    docs/DEPLOYMENT.md. Freeze after submission.
 6. How to run: see README. Judge path <2 minutes via /api/demo, no camera.
-7. Evaluation: real-shelf counting on single stills now exists
+7. Evaluation (COCO legacy — superseded for counting by §12): real-shelf counting on single stills
    (results/real_shelf_eval_results.json, separate team, tiled 3×3,
    conf 0.35): 5 countable images, hand total 175, predicted 93,
    MAE 18.4, bias −16.4, exact 0/5; a 6th image was qualitative only

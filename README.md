@@ -111,8 +111,9 @@ URL, auth NONE — deploy note in the file docstring and in
 `docs/LAMBDA_DEMO.md`). It returns the same `/health` and `/api/demo`
 shapes, statelessly, with no OpenCV import and no fake inference.
 Stated honestly: this reproduces the demo endpoint only, not the
-full FastAPI OpenCV 5 app, and the full app still requires running
-the repo locally (see "How to run"). Check it with
+full FastAPI OpenCV 5 app, which runs live on EC2 at
+http://16.171.250.54:8000; the repo run (see "How to run") is the
+local alternative. Check it with
 `python lambda_demo.py` or
 `python -m pytest tests/test_lambda_demo.py -q`.
 
@@ -140,8 +141,9 @@ shapes as the live endpoint, statelessly and with no OpenCV import
 and no fake inference: `/api/demo` is a staged illustration
 (synthetic sparse shelf, total 3, Gap, changed_ratio 0.625 against a
 full baseline of 8, annotated image null). This reproduces the demo
-endpoint only, not the full FastAPI OpenCV 5 app — the full app still
-requires running this repo locally (see "How to run" above). No Lambda
+endpoint only, not the full FastAPI OpenCV 5 app — that app runs live
+on EC2 at http://16.171.250.54:8000 (see "How to run" above for a
+local run). No Lambda
 latency, memory, or cost figure is claimed here, because none has been
 measured on Lambda; local figures are local only and must not be
 presented as Lambda figures. The live function was deployed from code
