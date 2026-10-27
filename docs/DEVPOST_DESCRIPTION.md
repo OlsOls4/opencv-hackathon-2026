@@ -1,9 +1,7 @@
 # ShelfScan — improved Devpost description (ready to paste)
 
 > PARENT ONLY — DO NOT PASTE THIS NOTE INTO DEVPOST.
-> Current live link is the v2 video: https://www.youtube.com/watch?v=ZgErR5RjIJE
-> Do NOT claim a v3 link yet. When v3 is ready, replace ONLY the video
-> line in the "Video" section below, and delete this note block.
+> Current live link is the v3 video: https://www.youtube.com/watch?v=YMC0FekW6sg
 > Also check before pasting: thumbnail (3:2, JPG/PNG/GIF, max 5 MB),
 > image gallery (dashboard screenshot, drift before/after, architecture
 > diagram), Built With tags, and Try It Out links — none of these can
@@ -20,15 +18,32 @@ shelf and tells the shopkeeper, in plain words, whether that shelf is
 Full, Low, has a Gap, or needs a Check — so an empty facing is found
 by staff, not by a customer.
 
-## Try it in 2 minutes (no camera needed)
+## Try it in 30 seconds (JSON check, no camera needed)
 
-1. Open the live full app on AWS EC2:
-   http://16.171.250.54:8000
-2. Open `/health` — it returns OpenCV 5.0.0.
-3. Open `/api/demo` — it returns the demo shelf state (Low,
-   changed 0.216 at last verification).
-4. To use the webcam dashboard, baseline, upload, and restock flow,
-   run the same app from the code repository (see "Code" below).
+A. Open the live full app on AWS EC2: http://16.171.250.54:8000
+B. Open http://16.171.250.54:8000/health — it returns OpenCV 5.0.0.
+C. Open http://16.171.250.54:8000/api/demo — it returns the demo
+   shelf state (Low, changed 0.216, re-verified 27 Oct 2026 00:22 GMT).
+
+## Try the full flow (webcam, baseline, restock)
+
+This requires running the app from the code repository (see "Code"
+below) — it is not a 2-minute hosted webcam demo. Baseline a full
+shelf, watch Full / Low / Gap / Check, restock, re-baseline to Full.
+
+## Evidence at a glance — and what to trust it for
+
+- Drift Gap 0.4864 on a whole-row removal only, single-shelf ROI
+  (whole-image ROI on the same removal is only Low 0.2021).
+- Counting MAE 7.0, n=5, exact 0/5, bleach 5/24, predicted 146
+  vs hand 175. The same 5 photos were also used to select
+  conf 0.10 among 8 configs; an independent held-out shelf test
+  is still pending. Hand-count uncertainty is about ±5 on
+  lemonade, ±4 on soda, ±3 on bleach.
+- False Gaps 50 → 5 on 24 videos / 322 frames, with phase +
+  shift guards. No shop pilot.
+- **Trust it only to flag a whole-row gap on one fixed-camera
+  shelf. Do NOT use its count for stock or ordering.**
 
 Secondary demo-only link (JSON only, no OpenCV, no webcam):
 https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/
@@ -176,6 +191,8 @@ Counting — an estimate, not an exact stock count:
 
 Current video (v3, counting + shelf state, 2:41):
 https://www.youtube.com/watch?v=YMC0FekW6sg
+Video shows counting as an estimate alongside drift; counting is
+not a stock count.
 
 ## Code, architecture, and report
 
@@ -184,7 +201,7 @@ https://www.youtube.com/watch?v=YMC0FekW6sg
 - Architecture diagram: docs/architecture.svg in the repository
 - Submission file: shelfscan-submission.zip (Additional info)
 
-## Built with (apply as tags in the Devpost form)
+## Built with
 
 OpenCV 5, Python, FastAPI, YOLO, AWS EC2, AWS Lambda, Docker,
 HTML, CSS, JavaScript
