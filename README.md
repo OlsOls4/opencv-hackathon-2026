@@ -152,13 +152,15 @@ See `docs/architecture.md`, `docs/TECHNICAL_REPORT.md`,
   small central gaps are missed. Camera movement is guarded, not
   solved; gradual lighting change, occlusion, and restock
   confirmation remain untested. No real-shelf accuracy is claimed.
-- Real shelf stills (results/real_shelf_eval_results.json):
-  5 countable images, hand total 175, predicted 93, MAE 18.4,
-  bias −16.4, exact 0/5; a 6th image was qualitative only (not reliably
-  countable). Counting still fails on real shelves — this does not
-  change the drift-first design. A real physical before/after
-  drift pair has still not been tested; only a simulated gap on a
-  real photo has.
+- Real shelf stills, single-class product counting (see
+  docs/TECHNICAL_REPORT.md §12): 5 countable photos never trained
+  on, hand total 175, predicted 146, MAE 7.0, bias −5.8, exact 0/5;
+  a 6th image was qualitative only (not reliably countable).
+  Generic COCO counting on the same 5 photos was MAE 18.4 with
+  wrong labels. Counting is an estimate, not an exact stock count;
+  drift remains the primary Gap signal. A real physical
+  before/after drift pair has still not been tested; only a
+  simulated gap on a real photo has.
 - Demo images are synthetic; real-shelf drift evaluation still needs
   staged before/after shelf photos with hand counts (see
   `eval/README.md`).

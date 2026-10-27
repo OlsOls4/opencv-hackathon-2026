@@ -1,7 +1,9 @@
 # ShelfScan — Technical Report (draft, real before/after drift still pending)
 
 > Status at submission: real-shelf counting on single stills is done
-> (see §7 and §11: n=5, MAE 18.4, bias −16.4, exact 0/5); real
+> (see §7 and §11: COCO n=5, MAE 18.4, bias −16.4, exact 0/5;
+> superseded for counting by the single-class model in §12:
+> n=5, MAE 7.0, predicted 146 / hand 175, exact 0/5); real
 > before/after drift pairs and any shop pilot are still untested, so
 > shelf-impact claims remain unproven. The ≤5-minute demo video
 > (4:22) was recorded after this report's earlier draft and predates
@@ -219,6 +221,41 @@
     cookie boxes are read as "cell phone", and cans/bottles as
     "refrigerator"/"cup", so no threshold fixes the undercount; counting
     remains a secondary signal behind baseline drift.
+
+12. Single-class product counting (26 Oct 2026, local only, held-out
+    real-shelf photos — full report: results/counting_work/counting_eval.md)
+    The COCO baseline in §7/§11 (MAE 18.4) is superseded for counting
+    by a YOLO26n fine-tuned on HoloSelecta (20 vending images, 807
+    boxes converted to ONE class "product", 20 epochs, CPU ~17 min)
+    and run single-tile via OpenCV 5.0.0 ONNX (app/product_counter.py,
+    conf 0.10, ~102-176 ms/image). The 5 real shelf photos below were
+    NEVER trained on, so they are held-out for this model; hand counts
+    are visual counts (multipack = 1 unit), NOT dataset ground truth.
+    No box carries a product name any more: every box is "product",
+    which fixes the COCO "cell phone / refrigerator" label errors,
+    but does not fix fragment/duplicate boxes.
+    Per-image predicted (hand in brackets): bleach_bottles 5 [24];
+    lemonade_bottles 91 [88]; cookie_boxes 19 [20]; soda_cans 17 [27];
+    wooden_bottles 14 [16]. Total predicted 146 / hand 175,
+    MAE 7.0, bias -5.8, exact 0/5 (about ±7 items per photo).
+    Held-out vending validation (last 4 HoloSelecta images held out):
+    mAP50 0.778, precision 0.80, recall 0.68. Tiled inference was NOT
+    used for this counter: tiled boxes are fragments (tiles cut items)
+    and must not be shown in a video. Bleach (5/24, white-on-white)
+    remains the worst case and must not be a demo hero.
+    Claim allowed, and no more: "Counts products on one shelf
+    (single class 'product', no brand or SKU names), about ±7 items
+    per photo on 5 held-out shelf photos (hand total 175, predicted
+    146, MAE 7.0, exact 0/5), best on clear bottle/box rows, weakest
+    on white-on-white bottles and occluded cans." NOT claimed: an
+    exact stock count, exact inventory, SKU/brand identification, or
+    accuracy on shelves unlike the 5 tested. Shelf-state drift
+    (Full/Low/Gap) remains the primary Gap signal; counting estimates
+    how much is there. The product ONNX weights are local only, not
+    committed, same rule as the COCO ONNX; models/download_model.py
+    fetches the COCO model and the training script is in
+    results/counting_work/train_product.py. Tests: 23 passed (+1
+    product-counter test pinning the 5 counts above).
 
 ## Live full OpenCV endpoint on AWS EC2 — verified 26 Oct 2026
 - EC2: shelfscan-ec2, i-08fc2ac1d0224790b, t3.micro, eu-north-1, Amazon Linux 2023, running, left running through judging (stop/terminate after 10 Nov 2026).
