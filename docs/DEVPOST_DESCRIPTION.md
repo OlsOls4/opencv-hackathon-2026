@@ -199,7 +199,7 @@ not a stock count.
 - Code: https://github.com/OlsOls4/opencv-hackathon-2026
 - Technical report: docs/TECHNICAL_REPORT.md in the repository
 - Architecture diagram: docs/architecture.svg in the repository
-- Submission file: shelfscan-submission.zip (Additional info)
+- Submission file: shelfscan-submission-v2.zip (Additional info)
 
 ## Built with
 
