@@ -170,6 +170,14 @@ class Detector:
         latency_ms = (time.time() - t0) * 1000.0
         return detections, annotated, latency_ms
 
+    def clear_baseline(self):
+        """Reset: the next frame reports 'No baseline' until a new full
+        shelf is captured. Used by /api/session/reset so the dashboard's
+        'Session and baseline reset' message is actually true."""
+        self._baseline_gray = None
+        self._baseline_roi = None
+        self._baseline_gray_raw = None
+
     def set_baseline(self, img, roi=(0.05, 0.10, 0.95, 0.90)):
         h, w = img.shape[:2]
         x1, y1, x2, y2 = int(w * roi[0]), int(h * roi[1]), int(w * roi[2]), int(h * roi[3])

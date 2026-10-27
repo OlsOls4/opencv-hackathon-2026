@@ -22,6 +22,19 @@ const baseBtn = document.getElementById('baseBtn');
 
 let stream = null;
 let timer = null;
+let lastUploadBlob = null;
+
+// Camera diagnosis (user-reported bug, 27 Oct 2026): getUserMedia only
+// works in a secure context (https:// or localhost). The live EC2 demo
+// is http://, so on that page navigator.mediaDevices is undefined and
+// the browser never even shows a permission prompt — the old code caught
+// that as "Camera was not allowed", which misled users into thinking
+// they had denied permission. Say so plainly, and make demo/upload the
+// primary path on http:// instead of pretending the camera works there.
+if (!window.isSecureContext) {
+  const note = document.getElementById('cameraNote');
+  if (note) note.textContent = 'Camera note: this page is loaded over http://, so your browser blocks camera access here. Browsers only allow cameras on https:// or localhost. Use “Try the demo shelf”, “Upload a photo”, or “Set full shelf from a photo” on this page — or run ShelfScan on your own computer (localhost) for the live camera.';
+}
 
 const STATES = {
   'Full': { cls: 'state-full', icon: '✓', action: 'Shelf looks full. No action needed.' },
@@ -96,7 +109,7 @@ document.getElementById('resetBtn').onclick = async () => {
   countEstimate.textContent = '—';
   changeText.textContent = '—';
   changeBar.style.width = '0%';
-  lastUpdated.textContent = 'Session reset';
+  lastUpdated.textContent = 'Session and baseline reset';
 };
 
 document.getElementById('csvBtn').onclick = () => { window.location = '/api/export.csv'; };
@@ -106,13 +119,37 @@ document.getElementById('conf').oninput = (e) => {
 };
 
 document.getElementById('upload').onchange = async (e) => {
-  if (e.target.files[0]) show(await post(e.target.files[0], '/api/upload'));
+  if (e.target.files[0]) {
+    lastUploadBlob = e.target.files[0];
+    show(await post(e.target.files[0], '/api/upload'));
+  }
   e.target.value = '';
 };
 
+// Camera is not required to set a baseline: a photo can set the full
+// shelf. This is the working path on http://, where the camera is
+// blocked (see the note above).
+document.getElementById('baselineUpload').onchange = async (e) => {
+  if (!e.target.files[0]) return;
+  const fd = new FormData();
+  fd.append('file', e.target.files[0]);
+  const r = await fetch('/api/baseline', { method: 'POST', body: fd }).then((x) => x.json());
+  e.target.value = '';
+  if (r.error) { errEl.textContent = r.error; return; }
+  errEl.textContent = '';
+  showAlert(null);
+  stateBadge.className = 'state-badge state-full';
+  stateIcon.textContent = '✓';
+  stateText.textContent = 'Full';
+  stateAction.textContent = 'Full shelf captured from your photo. ShelfScan is now watching this shelf.';
+  changeText.textContent = '0% changed';
+  changeBar.style.width = '0%';
+  changeBar.className = 'meter-fill';
+};
+
 document.getElementById('snapBtn').onclick = async () => {
-  const blob = await captureBlob();
-  if (!blob) { errEl.textContent = 'Start the camera first, then try outlining an item.'; return; }
+  const blob = await captureBlob() || lastUploadBlob;
+  if (!blob) { errEl.textContent = 'Start the camera, or upload a photo first, then try outlining an item.'; return; }
   const r = await post(blob, '/api/snapshot');
   if (r.annotated_image_base64) {
     view.src = 'data:image/jpeg;base64,' + r.annotated_image_base64;
@@ -159,7 +196,15 @@ camBtn.onclick = async () => {
     stream.getTracks().forEach((t) => t.stop());
     stream = null;
     video.hidden = true;
-    camBtn.textContent = 'Stop camera';
+    camBtn.textContent = 'Start camera';
+    return;
+  }
+  if (!window.isSecureContext) {
+    errEl.textContent = 'Camera is blocked because this page is over http://, not because you denied it. Browsers only allow cameras on https:// or localhost. Use “Try the demo shelf”, “Upload a photo”, or “Set full shelf from a photo” here — or run ShelfScan on your own computer (localhost) for the live camera.';
+    return;
+  }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    errEl.textContent = 'Camera is not available in this browser. Use “Try the demo shelf” or “Upload a photo” instead.';
     return;
   }
   try {
@@ -172,7 +217,13 @@ camBtn.onclick = async () => {
       const blob = await captureBlob();
       if (blob) show(await post(blob, '/api/frame'));
     }, 300);
-  } catch {
-    errEl.textContent = 'Camera was not allowed — try the demo shelf or upload a photo instead.';
+  } catch (err) {
+    if (err && err.name === 'NotAllowedError') {
+      errEl.textContent = 'Camera permission was denied in your browser settings. Allow the camera for this site, or use “Try the demo shelf” or “Upload a photo” instead.';
+    } else if (err && err.name === 'NotFoundError') {
+      errEl.textContent = 'No camera was found on this device. Use “Try the demo shelf” or “Upload a photo” instead.';
+    } else {
+      errEl.textContent = 'Camera could not be started. Use “Try the demo shelf” or “Upload a photo” instead.';
+    }
   }
 };

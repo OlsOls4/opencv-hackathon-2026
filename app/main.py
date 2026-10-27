@@ -153,7 +153,7 @@ async def api_frame(file: UploadFile = File(...), conf: float = None):
 
 
 @app.post("/api/upload")
-async def api_upload(file: UploadFile = File(...)):
+async def api_upload(file: UploadFile = File(...), conf: float = None):
     data = await file.read()
     if len(data) > config.MAX_IMAGE_MB * 1024 * 1024:
         return JSONResponse({"error": f"File over {config.MAX_IMAGE_MB} MB limit"}, status_code=413)
@@ -179,7 +179,7 @@ async def api_upload(file: UploadFile = File(...)):
             cap.release()
             if not frames:
                 return JSONResponse({"error": "No frames decoded from video"}, status_code=400)
-            return _process(frames[0])
+            return _process(frames[0], conf=conf)
         finally:
             if os.path.exists(tmp_path):
                 os.unlink(tmp_path)
@@ -187,7 +187,7 @@ async def api_upload(file: UploadFile = File(...)):
         img = decode_image(data)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=400)
-    return _process(img)
+    return _process(img, conf=conf)
 
 
 @app.post("/api/baseline")
@@ -223,7 +223,9 @@ async def api_snapshot(file: UploadFile = File(...)):
 @app.get("/api/demo")
 def api_demo():
     """Judge path, no camera needed. Sets full synthetic as baseline, then
-    shows a sparse synthetic shelf so Gap state is visible. Labelled demo."""
+    shows a sparse synthetic shelf so a Low state is visible (changed
+    0.216 on the whole-image ROI; Gap 0.486 requires a single-shelf ROI).
+    Labelled demo."""
     det = get_detector()
     det.set_baseline(make_demo_image(full=True), roi=config.ROI)
     img = make_demo_image(full=False)
@@ -252,7 +254,12 @@ def api_alert_dismiss():
 @app.post("/api/session/reset")
 def api_reset():
     tracker.reset(); history.clear(); alert_manager.reset()
-    return {"status": "reset"}
+    # Previously this left the baseline in place, so the dashboard's
+    # "No shelf checked yet" was false: the next frame still compared
+    # against the old full shelf. Reset now truly clears it.
+    if detector is not None:
+        detector.clear_baseline()
+    return {"status": "reset", "baseline_cleared": True}
 
 
 @app.get("/api/export.csv")

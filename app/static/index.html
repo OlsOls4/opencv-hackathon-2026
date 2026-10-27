@@ -63,7 +63,11 @@
           <input id="upload" type="file" accept="image/*,video/*">
         </label>
       </div>
-      <p class="hint">No camera? The demo shelf needs none. A photo upload checks one picture; it does not set the full-shelf baseline.</p>
+      <p id="cameraNote" class="hint"></p>
+      <p class="hint">No camera? The demo shelf needs none. A photo upload checks one picture; a video upload checks its first frame only. To set the full shelf from a photo (no camera needed), use “Set full shelf from a photo” below.</p>
+      <label class="btn btn-secondary file-btn">Set full shelf from a photo
+        <input id="baselineUpload" type="file" accept="image/*">
+      </label>
     </section>
 
     <section class="panel state-panel" aria-label="Shelf state">
@@ -102,12 +106,12 @@
       <details class="advanced">
         <summary>More options</summary>
         <label class="slider-label">Detection sensitivity
-          <input id="conf" type="range" min="0.25" max="0.60" step="0.05" value="0.35">
-          <span id="confVal">0.35</span>
+          <input id="conf" type="range" min="0.05" max="0.30" step="0.05" value="0.10">
+          <span id="confVal">0.10</span>
         </label>
-        <p class="hint">Lower finds more items; higher finds fewer, more certain items. The default works for most shelves.</p>
+        <p class="hint">Validated setting is 0.10. Lower finds more items; higher finds fewer, more certain items. This applies to camera frames and photo uploads.</p>
         <button id="snapBtn" class="btn btn-ghost">Outline the main item in this view</button>
-        <p class="hint">For the camera view only. It draws around the largest item it can see.</p>
+        <p class="hint">For the camera view, or the last photo you uploaded. It draws around the largest item it can see.</p>
       </details>
     </section>
   </div>
