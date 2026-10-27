@@ -19,25 +19,46 @@ from fastapi.staticfiles import StaticFiles
 from app import config
 from app.alerts import AlertManager
 from app.inference import Detector, decode_image, encode_jpeg
+from app.product_counter import ProductCounter
 from app.schemas import counts_from_detections, result_shape
 from app.segmentation import segment_snapshot
 from app.tracker import Tracker
 
 app = FastAPI(title="ShelfScan")
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-detector = None
+detector = None  # drift only — never used for counting (see below)
+counter = None
+_counter_error = None
 tracker = Tracker(max_missed=5)
 history = []  # list of {time, total, state, counts, alert}
 alert_manager = AlertManager(consecutive_frames=config.ALERT_CONSECUTIVE_FRAMES)
-_model_name = "yolo26n.onnx"
+_model_name = "product_yolo26n.onnx"
 
 
 def get_detector():
+    """Drift / baseline only. Its COCO detect() is legacy evaluation
+    and is never called by the dashboard."""
     global detector
     if detector is None:
-        path = os.path.join(BASE, config.MODEL_PATH)
-        detector = Detector(path, conf_threshold=config.CONF_THRESHOLD)
+        detector = Detector(os.path.join(BASE, config.MODEL_PATH),
+                            conf_threshold=config.CONF_THRESHOLD)
     return detector
+
+
+def get_counter():
+    """Single-class 'product' counter — the ONLY counting model the
+    dashboard uses. If the model file is missing, counting is disabled
+    and the dashboard shows drift state only. It NEVER falls back to
+    COCO, so no COCO label ('refrigerator', 'cell phone', ...) can
+    ever appear on the dashboard."""
+    global counter, _counter_error
+    if counter is None and _counter_error is None:
+        path = os.path.join(BASE, config.PRODUCT_MODEL_PATH)
+        try:
+            counter = ProductCounter(path, conf_threshold=config.PRODUCT_CONF_THRESHOLD)
+        except Exception as e:
+            _counter_error = str(e)
+    return counter
 
 
 def _b64(img):
@@ -46,9 +67,27 @@ def _b64(img):
 
 def _process(img, conf=None):
     det = get_detector()
-    if conf is not None:
-        det.conf_threshold = conf
-    detections, annotated, latency = det.detect(img)
+    cnt = get_counter()
+    if cnt is not None:
+        if conf is not None:
+            # Validated setting is 0.10; clamp the UI slider so a judge
+            # cannot push the counter into the collapsed range (0.35
+            # gives MAE 21.6 on the held-out photos).
+            cnt.conf_threshold = min(0.30, max(0.05, float(conf)))
+        detections, annotated, latency = cnt.count(img)
+        threshold = cnt.conf_threshold
+        counting_model = "product"
+        counting_note = ("Single-class 'product' count estimate, about +/-7 "
+                         "items per photo on 5 held-out photos; not an exact "
+                         "stock count, no brand or SKU.")
+    else:
+        detections, annotated, latency = [], img.copy(), 0.0
+        threshold = config.PRODUCT_CONF_THRESHOLD
+        counting_model = "unavailable"
+        counting_note = ("Product counter model not present; drift state only. "
+                         "No COCO fallback — no labels are shown.")
+    # Safety invariant: the dashboard only ever shows 'product'.
+    assert all(d["label"] == "product" for d in detections)
     track = tracker.update(detections)
     occ = det.occupancy_state(img, roi=config.ROI)
     counts = counts_from_detections(detections)
@@ -59,9 +98,12 @@ def _process(img, conf=None):
     history.append(entry)
     history[:] = history[-200:]
     result = result_shape(counts, len(detections), track["tracks"], latency,
-                          _model_name, det.conf_threshold, state=occ["state"],
+                          _model_name, threshold, state=occ["state"],
                           changed_ratio=occ.get("changed_ratio"), annotated_b64=_b64(annotated))
     result["active_alert"] = alert
+    result["counting_model"] = counting_model
+    result["counting_note"] = counting_note
+    result["coco_labels_on_dashboard"] = False
     return result
 
 
@@ -87,7 +129,9 @@ def health():
     # Liveness only: this does not prove a successful inference until
     # /api/demo also succeeds.
     return {"status": "ok", "opencv": cv2.__version__, "model": _model_name,
-            "model_loaded": detector is not None}
+            "model_loaded": counter is not None,
+            "counting": "single-class product (no COCO labels)",
+            "coco_labels_on_dashboard": False}
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -167,10 +211,10 @@ async def api_snapshot(file: UploadFile = File(...)):
         img = decode_image(data)
     except Exception as e:
         return JSONResponse({"error": str(e)}, status_code=400)
-    det = get_detector()
-    detections, _, _ = det.detect(img)
+    cnt = get_counter()
+    detections = cnt.count(img)[0] if cnt is not None else []
     if not detections:
-        return JSONResponse({"error": "No detection to segment"}, status_code=400)
+        return JSONResponse({"error": "No product detected to segment"}, status_code=400)
     out = segment_snapshot(img, detections[0]["box"])
     return {"label": "box-seeded foreground mask (GrabCut), not class-level instance segmentation",
             "annotated_image_base64": _b64(out)}

@@ -3,6 +3,12 @@ import os
 
 MODEL_PATH = os.environ.get("MODEL_PATH", "models/yolo26n.onnx")
 CONF_THRESHOLD = float(os.environ.get("CONF_THRESHOLD", "0.35"))
+# Live dashboard counting model (wired 27 Oct 2026): single-class
+# 'product' YOLO26n, validated MAE 7.0 on 5 held-out real shelf photos.
+# COCO MODEL_PATH above is now legacy evaluation only (see
+# app/inference.py) and is never used by the dashboard.
+PRODUCT_MODEL_PATH = os.environ.get("PRODUCT_MODEL_PATH", "models/product_yolo26n.onnx")
+PRODUCT_CONF_THRESHOLD = float(os.environ.get("PRODUCT_CONF_THRESHOLD", "0.10"))
 MAX_IMAGE_MB = float(os.environ.get("MAX_IMAGE_MB", "5"))
 PORT = int(os.environ.get("PORT", "8000"))
 HOST = os.environ.get("HOST", "0.0.0.0")

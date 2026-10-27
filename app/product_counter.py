@@ -26,6 +26,10 @@ is claimed. Counting remains a secondary signal; shelf-state
 ONNX output is YOLO26 (1, 5, 8400): cx, cy, w, h, score for class 0.
 This is NOT the COCO model format (1, 300, 6), so it has its own
 post-processor here, not Detector.detect().
+
+Wired into the live dashboard on 27 Oct 2026 (app/main.py): this is
+the ONLY counting model the dashboard uses. Every detection it
+returns is labelled 'product' — no COCO class names can appear.
 """
 import os
 import time

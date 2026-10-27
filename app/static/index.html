@@ -1,24 +1,134 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ShelfScan — one shelf, shelf states</title><link rel="stylesheet" href="/static/style.css"></head>
-<body><main>
-<h1>ShelfScan</h1>
-<p>One shelf, one camera, one area. Baseline a full shelf, then watch Full / Low / Gap / Check shelf. Demo mode needs no webcam.</p>
-<div id="status" role="status">Model: yolo26n.onnx · Inference runs on the server, not in your browser. (OpenCV version shown by /health.)</div>
-<div id="alertBanner" role="alert" style="display:none"><span id="alertText"></span> <button id="dismissBtn">Dismiss alert</button></div>
-<p>Shelf states (from baseline drift, not from the item count): Full — changed under 10%, no action. Low — changed 10–30%, check soon. Gap — changed 30% or more, restock now. Check shelf — large brightness/camera shift, do not trust the state; re-check lighting and camera, then re-capture the baseline if the shelf is full.</p>
-<p>Restock flow: 1) Restock the shelf fully. 2) Click “Capture baseline (full shelf) — use after restocking” with the webcam running. 3) The state should return to Full. There is no separate restock button — re-baselining is the restock confirmation, and it also clears any active alert. Alerts are in-dashboard only: a Gap or Low state sustained for 5 consecutive frames shows a banner here; no SMS, email, push, or sound notification is sent.</p>
-<section><img id="view" alt="Annotated shelf view" src="">
-<video id="video" autoplay muted playsinline style="display:none"></video><canvas id="canvas" style="display:none"></canvas></section>
-<section class="controls">
-<button id="demoBtn">Try demo shelf</button>
-<button id="camBtn">Start webcam</button>
-<button id="baseBtn">Capture baseline (full shelf) — use after restocking</button>
-<button id="snapBtn">Segment snapshot (GrabCut)</button>
-<button id="resetBtn">Reset session</button>
-<label>Confidence <input id="conf" type="range" min="0.25" max="0.60" step="0.05" value="0.35"> <span id="confVal">0.35</span></label>
-<label>Upload image/video <input id="upload" type="file" accept="image/*,video/*"></label>
-<button id="csvBtn">Download CSV</button>
-</section>
-<section id="result"><h2>Live COCO detections (secondary only — not a stock count)</h2><p id="state">State: —</p><p id="counts">—</p><p id="latency">—</p><p id="err"></p></section>
-</main><script src="/static/app.js"></script></body></html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="ShelfScan watches one shop shelf with a fixed camera and tells you if it is full, low, has a gap, or needs a check.">
+<title>ShelfScan — never miss an empty shelf</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">▦</span>
+    <div>
+      <strong class="brand-name">ShelfScan</strong>
+      <span class="brand-tag">One shelf. One camera.</span>
+    </div>
+  </div>
+  <p class="topbar-note">Fixed camera, one shelf, one area</p>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Never miss an empty shelf.</h1>
+    <p class="hero-sub">Point a camera at one shelf. ShelfScan tells you, in plain words, whether that shelf is full, running low, has a gap, or needs a check.</p>
+    <ol class="steps" aria-label="How it works">
+      <li><span class="step-no">1</span><span>Point the camera</span></li>
+      <li><span class="step-no">2</span><span>Capture the full shelf</span></li>
+      <li><span class="step-no">3</span><span>Watch for gaps</span></li>
+      <li><span class="step-no">4</span><span>Restock, then re-capture</span></li>
+    </ol>
+  </section>
+
+  <div id="alertBanner" class="alert" role="alert" hidden>
+    <div class="alert-body">
+      <strong id="alertTitle">Check this shelf</strong>
+      <span id="alertText"></span>
+    </div>
+    <button id="dismissBtn" class="btn btn-ghost">Dismiss</button>
+  </div>
+
+  <div class="layout">
+    <section class="panel view-panel" aria-label="Shelf view">
+      <div class="panel-head">
+        <h2>Shelf view</h2>
+        <span id="lastUpdated" class="muted">No shelf checked yet</span>
+      </div>
+      <div class="view-frame">
+        <img id="view" alt="Shelf view from the camera or demo" src="" hidden>
+        <div id="viewEmpty" class="view-empty">
+          <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true"><rect x="6" y="10" width="60" height="52" rx="8" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="36" cy="30" r="8" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 52l14-14 10 10 8-8 12 12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <p><strong>Your shelf will appear here.</strong></p>
+          <p>Try the demo shelf, or start your camera.</p>
+        </div>
+        <video id="video" autoplay muted playsinline hidden></video>
+        <canvas id="canvas" hidden></canvas>
+      </div>
+      <p id="err" class="error" role="status"></p>
+      <div class="actions">
+        <button id="demoBtn" class="btn btn-primary">Try the demo shelf</button>
+        <button id="camBtn" class="btn btn-secondary">Start camera</button>
+        <label class="btn btn-secondary file-btn">Upload a photo or video
+          <input id="upload" type="file" accept="image/*,video/*">
+        </label>
+      </div>
+      <p class="hint">No camera? The demo shelf needs none. A photo upload checks one picture; it does not set the full-shelf baseline.</p>
+    </section>
+
+    <section class="panel state-panel" aria-label="Shelf state">
+      <h2>Right now</h2>
+      <div id="stateBadge" class="state-badge state-none" role="status" aria-live="polite">
+        <span id="stateIcon" aria-hidden="true">○</span>
+        <span id="stateText">No shelf checked yet</span>
+      </div>
+      <p id="stateAction" class="state-action">Capture a full shelf first, then ShelfScan can watch it for you.</p>
+
+      <div class="meter" aria-label="How much the shelf has changed from the full baseline">
+        <div class="meter-head"><span>Changed from full shelf</span><span id="changeText">—</span></div>
+        <div class="meter-track"><div id="changeBar" class="meter-fill" style="width:0%"></div></div>
+        <p class="meter-scale"><span>Full · under 10%</span><span>Low · 10–30%</span><span>Gap · 30% or more</span></p>
+      </div>
+
+      <dl class="stats">
+        <div>
+          <dt>Products seen</dt>
+          <dd id="countEstimate">—</dd>
+        </div>
+        <div>
+          <dt>What this means</dt>
+          <dd>An estimate, not a stock count. It cannot say which product is missing.</dd>
+        </div>
+      </dl>
+
+      <button id="baseBtn" class="btn btn-success btn-large">✓ Restock complete — capture full shelf</button>
+      <p class="hint">Use this after restocking. It sets the new full shelf and clears any alert.</p>
+
+      <div class="secondary-actions">
+        <button id="csvBtn" class="btn btn-ghost">Download session report</button>
+        <button id="resetBtn" class="btn btn-ghost">Reset session</button>
+      </div>
+
+      <details class="advanced">
+        <summary>More options</summary>
+        <label class="slider-label">Detection sensitivity
+          <input id="conf" type="range" min="0.25" max="0.60" step="0.05" value="0.35">
+          <span id="confVal">0.35</span>
+        </label>
+        <p class="hint">Lower finds more items; higher finds fewer, more certain items. The default works for most shelves.</p>
+        <button id="snapBtn" class="btn btn-ghost">Outline the main item in this view</button>
+        <p class="hint">For the camera view only. It draws around the largest item it can see.</p>
+      </details>
+    </section>
+  </div>
+
+  <section class="panel explainer" aria-label="What the states mean">
+    <h2>What each state means</h2>
+    <ul class="state-list">
+      <li><span class="dot dot-full"></span><strong>Full</strong> — Looks like the full shelf. No action.</li>
+      <li><span class="dot dot-low"></span><strong>Low</strong> — Some items are missing. Check soon.</li>
+      <li><span class="dot dot-gap"></span><strong>Gap</strong> — A clear empty area. Restock now.</li>
+      <li><span class="dot dot-check"></span><strong>Check shelf</strong> — Lighting or camera moved. Do not trust this reading; fix the camera or lighting, then re-capture if the shelf is full.</li>
+    </ul>
+    <p class="hint">Alerts appear here only — no messages are sent anywhere else. A gap or low state held for a few frames in a row raises one alert banner.</p>
+  </section>
+</main>
+
+<footer>
+  <p>ShelfScan is for one fixed camera on one shelf. Frames are processed on the server and are not stored, unless you save a snapshot. Counts are estimates, not stock counts.</p>
+  <p id="statusNote" class="muted">Server checks the shelf for you — nothing runs in your browser.</p>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

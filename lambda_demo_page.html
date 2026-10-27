@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ShelfScan — never miss an empty shelf again</title>
+<meta name="description" content="ShelfScan watches one shop shelf with one fixed camera and tells the shopkeeper if it is Full, Low, has a Gap, or needs a Check. This page is a demo-only link: JSON only, no webcam, no OpenCV here.">
+<!--
+  DEPLOY NOTE (do not deploy from this file alone — parent must do it):
+  This is a self-contained landing page for the ShelfScan demo-only
+  AWS Lambda Function URL. It does NOT run OpenCV, a webcam, or live
+  counting. To deploy: in lambda_demo.py, make the root handler
+  (path "/" or "") return this file as text/html with status 200,
+  and keep /health and /api/demo returning exactly the same JSON
+  they return today. Do not change /health or /api/demo.
+  See docs/LAMBDA_PAGE_DEPLOY.md for the exact handler snippet.
+  IMPORTANT — live values: this page fetches ./api/demo at load and
+  shows whatever it returns. On the Lambda demo-only endpoint that
+  is a staged illustration: Gap, changed 0.625, 3 synthetic items
+  vs a full baseline of 8. The Low / 0.216 figure is the FULL app's
+  demo on EC2, shown separately below and clearly labelled as EC2 —
+  it is NOT a Lambda demo-only result, and this page never claims it is.
+-->
+<style>
+  :root{
+    --bg:#0f172a; --card:#ffffff; --ink:#0f172a; --muted:#475569;
+    --green:#15803d; --amber:#b45309; --red:#b91c1c; --blue:#1d4ed8;
+    --line:#e2e8f0; --soft:#f1f5f9; --accent:#16a34a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--soft);color:var(--ink);line-height:1.55}
+  a{color:var(--blue)} a:focus-visible,button:focus-visible{outline:3px solid #f59e0b;outline-offset:3px}
+  .skip{position:absolute;left:-9999px} .skip:focus{left:1rem;top:1rem;background:#fff;padding:.5rem 1rem;z-index:10}
+  header{background:var(--bg);color:#fff}
+  .wrap{max-width:980px;margin:0 auto;padding:0 1.25rem}
+  nav{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 0;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.25rem;color:#fff;text-decoration:none}
+  .brand svg{flex:none}
+  .navlinks{display:flex;gap:1rem;flex-wrap:wrap} .navlinks a{color:#e2e8f0}
+  .hero{padding:2.5rem 0 2rem}
+  .eyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:.85rem;color:#86efac;font-weight:700}
+  h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.1;margin:.5rem 0}
+  .lede{font-size:1.2rem;color:#e2e8f0;max-width:640px}
+  .cta{display:flex;gap:.75rem;flex-wrap:wrap;margin:1.5rem 0}
+  .btn{display:inline-block;padding:.8rem 1.25rem;border-radius:.75rem;font-weight:700;text-decoration:none;border:2px solid transparent}
+  .btn-primary{background:var(--accent);color:#fff} .btn-ghost{background:transparent;color:#fff;border-color:#fff}
+  .btn-dark{background:var(--ink);color:#fff}
+  main{padding:2rem 0 3rem}
+  .notice{background:#fff7ed;border:2px solid #fdba74;border-radius:1rem;padding:1rem 1.25rem;margin-bottom:1.5rem}
+  .notice strong{color:#9a3412}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:1rem;padding:1.25rem;box-shadow:0 1px 4px rgba(15,23,42,.06)}
+  .card h2,.card h3{margin-top:0}
+  .badge{display:inline-block;padding:.25rem .7rem;border-radius:999px;font-weight:800;background:#fee2e2;color:var(--red)}
+  .badge.low{background:#fef3c7;color:var(--amber)} .badge.full{background:#dcfce7;color:var(--green)} .badge.check{background:#dbeafe;color:var(--blue)}
+  .meter{height:12px;background:var(--soft);border-radius:999px;overflow:hidden;margin:.75rem 0}
+  .meter>div{height:100%;background:var(--red);width:62.5%}
+  .big{font-size:2rem;font-weight:800;line-height:1.1}
+  .muted{color:var(--muted)} .small{font-size:.9rem}
+  ol.steps{padding-left:1.25rem} ol.steps li{margin:.5rem 0}
+  .state-icon{font-size:1.5rem}
+  footer{background:var(--bg);color:#e2e8f0;padding:2rem 0} footer a{color:#fff}
+  @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header>
+  <div class="wrap">
+    <nav aria-label="Main">
+      <a class="brand" href="#" aria-label="ShelfScan home">
+        <svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="5" width="26" height="22" rx="3" fill="#16a34a"/><rect x="6" y="10" width="20" height="2" fill="#fff"/><rect x="6" y="18" width="20" height="2" fill="#fff"/><rect x="8" y="12" width="4" height="5" fill="#fff"/><rect x="14" y="12" width="4" height="5" fill="#fff"/><rect x="20" y="20" width="4" height="5" fill="#fff"/></svg>
+        ShelfScan
+      </a>
+      <div class="navlinks">
+        <a href="http://16.171.250.54:8000">Live full app</a>
+        <a href="https://devpost.com/software/shelfscan-tm39q7">Devpost</a>
+        <a href="https://github.com/OlsOls4/opencv-hackathon-2026">GitHub</a>
+      </div>
+    </nav>
+    <div class="hero">
+      <p class="eyebrow">One shop · One shelf · One camera</p>
+      <h1>Never miss an empty shelf again.</h1>
+      <p class="lede">ShelfScan watches a single shop shelf and tells the shopkeeper, in plain words, whether that shelf is <strong>Full</strong>, <strong>Low</strong>, has a <strong>Gap</strong>, or needs a <strong>Check</strong> — so an empty facing is found by staff, not by a customer.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="http://16.171.250.54:8000">Try the live full app →</a>
+        <a class="btn btn-ghost" href="https://devpost.com/software/shelfscan-tm39q7">View on Devpost</a>
+        <a class="btn btn-ghost" href="https://github.com/OlsOls4/opencv-hackathon-2026">View the code</a>
+      </div>
+      <p class="small" style="color:#e2e8f0">Built for the OpenCV AI Competition 2026. OpenCV 5, Python, FastAPI, AWS.</p>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <section class="notice" aria-label="Demo-only notice">
+    <strong>Demo-only page — please read this first.</strong>
+    This link is JSON only. It has <strong>no webcam, no OpenCV, and no live counting</strong> on this page.
+    The live demo below is a fixed, staged illustration. For the real app — webcam, OpenCV 5, baseline and restock — use the <a href="http://16.171.250.54:8000">live full app on EC2</a>.
+  </section>
+
+  <section class="grid" aria-label="Live demo state">
+    <article class="card">
+      <h2>Live demo state <span class="small muted">(this demo-only link)</span></h2>
+      <p><span id="stateBadge" class="badge" role="status">Loading…</span></p>
+      <p class="big" id="stateLine">—</p>
+      <div class="meter" aria-hidden="true"><div id="meterBar"></div></div>
+      <p class="small muted" id="demoDetail">Fetching ./api/demo…</p>
+      <p class="small">Staged illustration only: a synthetic sparse shelf against a synthetic full baseline. No detector ran here, so there is no measured latency and no annotated image. If this fails to load, the staged values are: Gap, changed 0.625, 3 items vs a full baseline of 8.</p>
+      <p><a href="./api/demo">View the raw JSON</a> · <a href="./health">Health check</a></p>
+    </article>
+    <article class="card">
+      <h2>Full app demo <span class="small muted">(EC2, OpenCV 5.0.0)</span></h2>
+      <p><span class="badge low">LOW</span></p>
+      <p class="big">Low · changed 0.216</p>
+      <p class="small muted">Re-verified 27 Oct 2026, 00:22 GMT, on the live full app. This figure is from EC2, not from this demo-only page.</p>
+      <p><a class="btn btn-dark" href="http://16.171.250.54:8000/api/demo">Open the full app demo</a></p>
+      <p class="small">The full app runs the real drift code, webcam dashboard, baseline capture, alerts and CSV export.</p>
+    </article>
+  </section>
+
+  <section aria-labelledby="states-heading" style="margin-top:2rem">
+    <h2 id="states-heading">What each state means</h2>
+    <div class="grid">
+      <article class="card"><p class="state-icon" aria-hidden="true">✅</p><h3>Full</h3><p>The shelf looks like its full baseline. No action needed.</p></article>
+      <article class="card"><p class="state-icon" aria-hidden="true">⚠️</p><h3>Low</h3><p>Some items are missing. Check soon.</p></article>
+      <article class="card"><p class="state-icon" aria-hidden="true">🚨</p><h3>Gap</h3><p>A clear empty area. Restock now.</p></article>
+      <article class="card"><p class="state-icon" aria-hidden="true">🔍</p><h3>Check shelf</h3><p>Lighting changed or the camera moved. Do not trust the state — fix the camera or lighting, then re-capture the baseline.</p></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="journey-heading" style="margin-top:2rem">
+    <h2 id="journey-heading">One journey, start to finish</h2>
+    <div class="card"><ol class="steps">
+      <li>Point a fixed camera at one shelf and capture a “full” baseline.</li>
+      <li>ShelfScan compares each new frame with that baseline.</li>
+      <li>A Gap or Low held for 5 frames raises an in-dashboard alert. No SMS, email or push alert in this version.</li>
+      <li>Restock fully, capture a new baseline, and the state returns to Full. That re-baseline is the restock confirmation.</li>
+    </ol></div>
+  </section>
+
+  <section class="card" aria-labelledby="counting-heading" style="margin-top:1rem">
+    <h2 id="counting-heading">Counting, honestly</h2>
+    <p>ShelfScan also gives a <strong>rough product count estimate</strong> — one class, “product”, no brand or barcode. On 5 held-out real shelf photos it scored <strong>MAE 7.0</strong> (predicted 146 vs hand-counted 175): cookie tins 19/20, lemonade 91/88, wooden bottles 14/16, soda cans 17/27, bleach 5/24 (white-on-white, worst case).</p>
+    <p><strong>Estimate, not a stock count.</strong> Do not use it for stock or ordering. Counting does not run on this demo-only page.</p>
+  </section>
+
+  <section class="card" aria-label="What this page cannot do" style="margin-top:1rem">
+    <h2>What this page cannot do</h2>
+    <ul>
+      <li>No webcam, no photo upload, no baseline capture, no restock action here.</li>
+      <li>No OpenCV, no YOLO inference, no annotated image here.</li>
+      <li>Fixed camera, one shelf, one area only. No multi-shelf, SKU, barcode or shop till link.</li>
+      <li>No shop pilot yet, and no real physical before/after removal pair yet. Gap proof is a simulated whole-row removal on a real photo, plus a constructed stills video.</li>
+    </ul>
+    <p><a class="btn btn-dark" href="http://16.171.250.54:8000">Go to the live full app →</a></p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>ShelfScan</strong> — OpenCV AI Competition 2026. No COOL or Agentic Vision award claimed.</p>
+    <p><a href="https://devpost.com/software/shelfscan-tm39q7">Devpost</a> · <a href="https://github.com/OlsOls4/opencv-hackathon-2026">GitHub</a> · <a href="http://16.171.250.54:8000">Live full app (EC2)</a> · <a href="./health">Health</a> · <a href="./api/demo">Demo JSON</a></p>
+    <p class="small">Point a camera at the shelf only, not at staff or customers. No facial recognition, no audio. Live frames are processed in memory and are not stored by default.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var badge = document.getElementById('stateBadge');
+  var line = document.getElementById('stateLine');
+  var detail = document.getElementById('demoDetail');
+  var bar = document.getElementById('meterBar');
+  function render(state, changed, total, baseline) {
+    var cls = state === 'Full' ? 'full' : state === 'Low' ? 'low' : state === 'Check shelf' ? 'check' : '';
+    badge.textContent = state.toUpperCase();
+    badge.className = 'badge ' + cls;
+    line.textContent = state + ' · changed ' + changed;
+    bar.style.width = Math.min(100, Math.max(0, Math.round(changed * 100))) + '%';
+    detail.textContent = 'Staged demo: ' + total + ' synthetic items vs a full baseline of ' + baseline + ' items. Changed = (' + baseline + ' − ' + total + ') / ' + baseline + '.';
+  }
+  fetch('./api/demo', {headers: {'Accept': 'application/json'}})
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (d) {
+      render(d.state || 'Gap', Number(d.changed_ratio || 0.625), d.total != null ? d.total : 3, d.baseline_items != null ? d.baseline_items : 8);
+    })
+    .catch(function () {
+      render('Gap', 0.625, 3, 8);
+      detail.textContent += ' (Live fetch failed, showing the fixed staged values.)';
+    });
+})();
+</script>
+</body>
+</html>

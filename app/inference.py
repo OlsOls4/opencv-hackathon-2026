@@ -1,9 +1,20 @@
 """OpenCV 5 inference for ShelfScan.
 
 Primary signal: baseline / occupancy drift (frame differencing).
-Secondary / confirmatory signal: YOLO26n object counting via OpenCV 5 DNN.
-This hierarchy is deliberate: generic COCO classes cannot reliably name
-packaged shelf goods, so counting alone must not carry a "gap" claim.
+Secondary / confirmatory signal: single-class 'product' counting via
+app/product_counter.py (OpenCV 5 DNN), NOT the COCO Detector below.
+
+Detector is kept for two purposes only:
+  1. Baseline / occupancy drift (set_baseline, occupancy_state) — this
+     is the live dashboard's shelf-state signal, and it uses no labels.
+  2. Legacy COCO evaluation (detect / detect_tiled, used by
+     tests/test_inference.py and scripts/evaluate*.py to reproduce the
+     old COCO numbers). Detector.detect() must NOT be called by the
+     live dashboard (app/main.py) — its COCO labels ('refrigerator',
+     'cell phone', ...) are exactly the wrong labels this project
+     removed from the dashboard on 27 Oct 2026.
+This hierarchy is deliberate: counting alone must not carry a "gap"
+claim, and COCO labels must not appear on the dashboard at all.
 """
 import json
 import os
@@ -27,16 +38,23 @@ class Detector:
     def __init__(self, model_path, conf_threshold=0.35):
         if cv2.__version__ != "5.0.0":
             raise RuntimeError(f"OpenCV 5.0.0 required, got {cv2.__version__}")
-        self.net = cv2.dnn.readNetFromONNX(model_path)
-        # OpenCV 5 engine API differs by build; prefer ENGINE_OPENCV, fall back to ENGINE_NEW.
-        try:
-            self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-        except Exception:
-            pass
+        # Net is loaded lazily on detect(): the live dashboard uses this
+        # class for drift only and must never load the COCO model.
+        self._model_path = model_path
+        self.net = None
         self.conf_threshold = conf_threshold
         self._baseline_gray = None
         self._baseline_roi = None
         self._baseline_gray_raw = None  # unblurred ROI gray, for camera-move check
+
+    def _ensure_net(self):
+        if self.net is None:
+            self.net = cv2.dnn.readNetFromONNX(self._model_path)
+            try:
+                self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+            except Exception:
+                pass
+        return self.net
 
     def letterbox(self, img):
         h, w = img.shape[:2]
@@ -109,7 +127,8 @@ class Detector:
         return kept, annotated, (time.time() - t0) * 1000.0
 
     def detect(self, img, _allow_tiling=True):
-        """Return (detections, annotated_img, latency_ms).
+        """LEGACY COCO detection — evaluation only, NOT the dashboard.
+        Return (detections, annotated_img, latency_ms).
         detections: list of {label, confidence, box:[x1,y1,x2,y2]} in original coords.
         Adaptive resolution: live webcam frames (~640px) use single-tile
         detection for speed; high-resolution uploads use tiled detection,
@@ -125,7 +144,7 @@ class Detector:
         t0 = time.time()
         padded, scale, pad_x, pad_y = self.letterbox(img)
         blob = cv2.dnn.blobFromImage(padded, 1 / 255.0, (INPUT_SIZE, INPUT_SIZE), swapRB=True)
-        self.net.setInput(blob)
+        self._ensure_net().setInput(blob)
         out = self.net.forward()
         if out.shape != (1, 300, 6):
             raise RuntimeError(f"Unexpected DNN output shape {out.shape}, expected (1, 300, 6)")
