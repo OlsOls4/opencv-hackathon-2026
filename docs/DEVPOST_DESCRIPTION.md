@@ -108,21 +108,23 @@ Shelf-state (drift) — this is what the product claims:
   Moving footage is therefore reported as Check shelf, not Gap.
   No shop pilot and no fixed shop-camera footage exist yet.
 
-Counting — this is what the product does NOT claim:
+Counting — an estimate, not an exact stock count:
 
-- Real shelf stills, 5 countable photos, hand total 175,
-  predicted 93, MAE 18.4, bias −16.4, exact 0/5. A 6th photo was
+- Single-class YOLO26n, trained on HoloSelecta (20 vending
+  images, 807 boxes, one class 'product'), run in OpenCV 5
+  DNN, single-tile, conf 0.10, latency 102–176 ms.
+- Held-out real shelf stills, 5 countable photos, hand
+  total 175, predicted 146, MAE 7.0, exact 0/5. Per photo:
+  cookie 19/20, lemonade 91/88, wooden 14/16, soda 17/27,
+  bleach 5/24 (white-on-white, worst case). A 6th photo was
   not reliably countable and was excluded, not counted.
-- HoloSelecta vending transfer, 20 images: single-tile
-  MAE 38.05, tiled MAE 26.35, exact 0/20. This is vending-domain
-  transfer, not a shelf result.
-- Classical counting alternatives were tested on the same
-  5 photos and did not beat this reliably (contour MAE 36.4,
-  MSER MAE 29.6). Open-vocabulary models and fine-tuning were
-  assessed and not run before the deadline: fine-tuning needs
-  500–1000 boxed shelf images plus GPU time, which was not
-  available. Counting is therefore secondary, and no labelling
-  accuracy, stock count, or time-saved figure is claimed.
+- Generic COCO counting on the same 5 photos was MAE 18.4,
+  with wrong labels (whole shelf as 'refrigerator', cookie
+  tins as 'cell phone'). Classical alternatives did not beat
+  it reliably (contour MAE 36.4, MSER MAE 29.6).
+- No brand, SKU, labelling accuracy, exact stock count, or
+  time-saved figure is claimed. Drift remains the primary
+  gap signal; counting estimates how much is there.
 
 ## Challenges and what we learned
 
@@ -172,9 +174,8 @@ Counting — this is what the product does NOT claim:
 
 ## Video
 
-Current video (v2, real data): https://www.youtube.com/watch?v=ZgErR5RjIJE
-— REPLACE THIS LINE ONLY when v3 (shelf-state demo, planned
-per the devpost-demo-video skill) is uploaded.
+Current video (v3, counting + shelf state, 2:41):
+https://www.youtube.com/watch?v=YMC0FekW6sg
 
 ## Code, architecture, and report
 
