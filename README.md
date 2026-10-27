@@ -3,25 +3,35 @@
 **One shelf, one camera, one area.** ShelfScan watches a shop shelf with a
 webcam and shows Full / Low / Gap / Check shelf states on a dashboard.
 
+**Never miss an empty shelf again — start here, in 30 seconds:**
+1. Open the live full app on AWS EC2: http://16.171.250.54:8000
+2. Open http://16.171.250.54:8000/health — it returns OpenCV 5.0.0.
+3. Open http://16.171.250.54:8000/api/demo — it returns the demo shelf
+   state (Low, changed 0.216, re-verified 27 Oct 2026 00:22 GMT).
+To use the webcam dashboard, baseline, and restock flow with your own
+camera, run the full FastAPI app from this repo locally; see
+"How to run" below. Demo video (2:41, counting + shelf state):
+https://www.youtube.com/watch?v=YMC0FekW6sg — Devpost project:
+https://devpost.com/software/shelfscan-tm39q7
+
 **Honest scope (v1):** Baseline a full shelf, then live Full / Low / Gap /
 Check shelf states, restock confirmation (see below), history + CSV.
-Baseline/occupancy drift is the primary signal; YOLO counting is
-secondary/confirmatory. No 8-zone drawing, no brand/SKU recognition,
+Baseline/occupancy drift is the primary signal; counting is a secondary
+estimate only, never an exact stock count. No brand/SKU recognition,
 no POS, no mobile app, no login, no COOL/Agentic special awards.
 What is new here is scope and signal hierarchy, not a new algorithm:
-one fixed ROI, drift as primary, generic YOLO counting demoted to
-secondary because COCO cannot name packaged goods. The pipeline itself
-uses standard OpenCV techniques and an off-the-shelf COCO model.
-
-**Live demo for judges (no camera needed):** open the full app on
-AWS EC2 at http://16.171.250.54:8000 and follow the links to /health
-(OpenCV 5.0.0) and /api/demo. A secondary demo-only JSON link is
+one fixed ROI, drift as primary, counting as a single-class
+"product" estimate (MAE 7.0 on 5 held-out real shelf photos, no brand
+or SKU — see docs/TECHNICAL_REPORT.md §12). The live dashboard still
+shows generic COCO labels for detections, which can misname packaged
+goods; the single-class counter is validated offline and is not yet
+wired into that dashboard.
+A secondary demo-only JSON link is
 https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/
 — it returns JSON only, runs no OpenCV inference, and has no webcam,
-upload, baseline, or restock actions. To use the dashboard ("Try demo
-shelf", webcam, baseline, CSV) with your own camera, run the full
-FastAPI app from this repo locally; see "How to run" below.
-Demo images are synthetic and labelled as staged footage.
+upload, baseline, or restock actions. The demo shelf inside the app is
+synthetic and labelled as staged footage; the evaluation photos used
+for counting and drift are real shelf photos, as stated in the report.
 
 **Shelf states (from baseline drift, not from the item count):**
 Full — changed under 10%, shelf looks like the full baseline, no action.
@@ -29,8 +39,9 @@ Low — changed 10–30%, some items missing, check soon.
 Gap — changed 30% or more, a clear empty area, restock now.
 Check shelf — large brightness/camera shift, do not trust the state;
 re-check lighting and camera position, then re-capture the baseline
-if the shelf is full. The item count is secondary and cannot name
-packaged goods.
+if the shelf is full. The item count is a secondary estimate only
+(single-class "product", no brand or SKU) and must not be used for
+stock or ordering.
 
 **Restock flow:** 1) Restock the shelf fully. 2) Click
 "Capture baseline (full shelf) — use after restocking" with the webcam
@@ -72,7 +83,7 @@ docker build -t shelfscan . && docker run -p 8000:8000 shelfscan
 Docker from a fresh GitHub clone: the Dockerfile now runs
 `python models/download_model.py` (SHA256-verified) during the build,
 because the ONNX file is not committed. Docker build PASSED on AWS
-EC2 (26 Oct 2026, image shelfscan:latest, 387 MB, container Up,
+EC2 (27 Oct 2026, image shelfscan:latest, 399 MB, container Up,
 /health OpenCV 5.0.0, /api/demo Low 0.216). No digest was recorded
 for the locally built image; do not claim a registry digest.
 Tiled mode is stills-only: high-resolution tiled inference takes

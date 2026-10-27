@@ -120,7 +120,8 @@
    the repo, not in browser; the AWS Lambda endpoint is demo-only (no
    OpenCV, /health and /api/demo only — see "Live AWS demo endpoint" above).
 4. OpenCV 5 implementation: letterbox, blobFromImage, YOLO26n DNN [1,300,6],
-   confidence 0.35 default, IoU/centroid tracker (max_missed=5), baseline
+   confidence 0.10 default for the live single-class product counter (§12;
+   COCO legacy evaluation used 0.35), IoU/centroid tracker (max_missed=5), baseline
    differencing/background modelling as PRIMARY, YOLO count secondary.
    Snapshot-only GrabCut, labelled honestly.
 5. AWS deployment: Lambda demo-only endpoint in eu-north-1 (see "Live AWS
