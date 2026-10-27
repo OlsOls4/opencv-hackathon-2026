@@ -1,16 +1,3 @@
-# ShelfScan — improved Devpost description (ready to paste)
-
-> PARENT ONLY — DO NOT PASTE THIS NOTE INTO DEVPOST.
-> Current live link is v4: https://www.youtube.com/watch?v=62QhywyJCFQ
-> Also check before pasting: thumbnail (3:2, JPG/PNG/GIF, max 5 MB),
-> image gallery (dashboard screenshot, drift before/after, architecture
-> diagram), Built With tags, and Try It Out links — none of these can
-> be set from this text file alone.
-> No number or link in the text below is invented. Every figure is
-> copied from results/ or docs/TECHNICAL_REPORT.md.
-
----
-
 ## ShelfScan — never miss an empty shelf again
 
 **One shop, one shelf, one camera.** ShelfScan watches a single shop
@@ -27,22 +14,33 @@ design bet.
 
 A. Open the live full app on AWS EC2: http://16.171.250.54:8000
 B. Open http://16.171.250.54:8000/health — it returns OpenCV 5.0.0.
-C. Open http://16.171.250.54:8000/api/demo — it returns the demo
-   shelf state (Low, changed 0.216, re-verified 27 Oct 2026 05:27 GMT).
+C. Open http://16.171.250.54:8000/api/demo — it returns the synthetic
+   demo shelf state (Low, changed 0.216, re-verified 27 Oct 2026
+   05:27 GMT).
+
+Second, demo-only JSON link — a different staged shelf, not the EC2
+demo: https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/
+— it returns Gap 0.625, 3 synthetic items vs a full baseline of 8,
+runs no OpenCV, and has no webcam. Do not compare it with the EC2
+demo above.
 
 ## Try the full flow (no camera needed)
 
-Try the full flow on EC2, no camera needed: "Try the demo shelf",
-or "Set full shelf from a photo", then upload a later photo to see
-Full / Low / Gap / Check and the 5-frame alert. Live camera needs
-HTTPS or localhost — this EC2 page is HTTP, so the dashboard
-explains that and offers the photo path instead. Repo run is only
-needed for a live webcam.
+Try the full flow on EC2, no camera needed, in this order: (1)
+click "Reset session" first, in case another visitor changed the
+shared baseline; (2) click "Try the demo shelf", or "Set full shelf
+from a photo"; (3) upload a later photo to see Full / Low / Gap /
+Check. Do NOT click "Start camera" on this HTTP page — browsers
+block it there; the dashboard explains this. Note: the 5-frame
+alert needs 5 consecutive camera frames, so a single photo upload
+will not raise one. Repo run is only needed for a live webcam.
 
 ## Evidence at a glance — and what to trust it for
 
-- Drift Gap 0.4864 on a whole-row removal only, single-shelf ROI
-  (whole-image ROI on the same removal is only Low 0.2021).
+- Drift Gap 0.4864 on a simulated whole-row removal only (a real
+  photo with a row digitally removed, not a physical removal),
+  single-shelf ROI (whole-image ROI on the same removal is only
+  Low 0.2021).
 - Counting MAE 7.0, n=5, exact 0/5, bleach 5/24, predicted 146
   vs hand 175. The same 5 photos were also used to select
   conf 0.10 among 8 configs; an independent held-out shelf test
@@ -53,9 +51,6 @@ needed for a live webcam.
   describe intended use, not measured shop results.
 - **Trust it only to flag a whole-row gap on one fixed-camera
   shelf. Do NOT use its count for stock or ordering.**
-
-Secondary demo-only link (JSON only, no OpenCV, no webcam):
-https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/
 
 ## The problem
 
@@ -234,7 +229,7 @@ not a stock count.
 - Code: https://github.com/OlsOls4/opencv-hackathon-2026
 - Technical report: docs/TECHNICAL_REPORT.md in the repository
 - Architecture diagram: docs/architecture.svg in the repository
-- Submission file: shelfscan-submission-v4.zip (Additional info)
+- Submission file: shelfscan-submission-v5.zip (Additional info)
 
 ## Built with
 

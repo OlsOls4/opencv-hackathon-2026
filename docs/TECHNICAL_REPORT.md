@@ -29,8 +29,8 @@
   {"status":"ok","opencv":"5.0.0","model":"yolo26n.onnx"};
   /api/demo returned state Low, total 0, latency 163.8 ms;
   upload returned state Full, total 0; /api/session and /api/export.csv worked
-- Unit tests: 4 passed (inference version/shape, letterbox, tracker ID
-  persistence/reset, demo image)
+- Unit tests at that snapshot: 4 passed (inference version/shape, letterbox, tracker ID
+  persistence/reset, demo image); current suite: 39 passed (see §12 and Dashboard QA fixes)
 - Real-object sanity check (NOT a shelf photo): a public bus photo gave
   5 detections in 301 ms — bus 0.92, persons 0.91 / 0.90 / 0.86 / 0.57.
   This proves the DNN path works on real objects; it is NOT shelf
@@ -53,7 +53,8 @@
   (function shelfscan-demo, eu-north-1, public Function URL, /health and
   /api/demo only). This is NOT the full app: OpenCV is NOT loaded in
   Lambda, no live webcam/stateful tracking, no /api/frame on Lambda.
-  The full FastAPI app runs locally from the repo. App Runner in
+  The full FastAPI app runs live on EC2 at http://16.171.250.54:8000.
+  App Runner in
   eu-west-2 was unavailable (no longer accepting new customers from
   30 April 2026) and Lambda eu-west-2 was region-blocked for this new
   account, hence eu-north-1. See docs/ZERO_COST_AWS.md for the earlier
@@ -117,9 +118,10 @@
    history + CSV, and an in-dashboard alert only (Gap/Low sustained for
    5 consecutive frames; banner + session/CSV, no external
    notification). Demo mode first for judges.
-3. Architecture: see docs/architecture.md. Full inference runs locally from
-   the repo, not in browser; the AWS Lambda endpoint is demo-only (no
-   OpenCV, /health and /api/demo only — see "Live AWS demo endpoint" above).
+3. Architecture: see docs/architecture.md. Full inference runs on AWS EC2
+   (http://16.171.250.54:8000), not in browser; the AWS Lambda endpoint is
+   demo-only and secondary (no OpenCV, /health and /api/demo only — see
+   "Live AWS demo endpoint" above).
 4. OpenCV 5 implementation: letterbox, blobFromImage, YOLO26n DNN [1,300,6],
    confidence 0.10 default for the live single-class product counter (§12;
    COCO legacy evaluation used 0.35), IoU/centroid tracker (max_missed=5), baseline
@@ -131,8 +133,10 @@
    tracking, no /api/frame on Lambda. App Runner eu-west-2 was unavailable
    (no longer accepting new customers from 30 April 2026) and Lambda
    eu-west-2 was region-blocked for this new account, hence eu-north-1.
-   The full FastAPI app runs locally from the repo. Docker/CloudWatch/S3
-   and billing alarm details: see docs/DEPLOYMENT.md. Freeze after submission.
+   The full FastAPI app runs live on EC2 at http://16.171.250.54:8000 (see
+   "Live full OpenCV endpoint on AWS EC2" below); the repo run is the local
+   alternative only. Docker/CloudWatch/S3 and billing alarm details: see
+   docs/DEPLOYMENT.md. Freeze after submission.
 6. How to run: see README. Judge path <2 minutes via /api/demo, no camera.
 7. Evaluation: real-shelf counting on single stills now exists
    (results/real_shelf_eval_results.json, separate team, tiled 3×3,
@@ -174,8 +178,9 @@
    /api/session and /api/export.csv) — no push, email, SMS, or sound
    notification is sent, so an alert is only visible to someone
    watching the dashboard. Session state is shared, not per-user.
-   The local server has no login or rate limiting. The Dockerfile has not
-   been build-tested and the Lambda demo code is not in this repo.
+   The local server has no login or rate limiting. The Dockerfile has
+   been build-tested on EC2 (399 MB, container Up) and the Lambda demo
+   code is in this repo as lambda_demo.py.
 9. Responsible use and privacy: shelf only, no facial recognition, no audio,
    snapshots limited to shelf view, retention/deletion note for demo.
    Point the camera at the shelf only, not at staff, customers, or till
@@ -255,11 +260,11 @@
     (including 6 dashboard QA tests: photo baseline, slider range,
     upload conf, reset clears baseline, camera HTTP note).
 
-## Live full OpenCV endpoint on AWS EC2 — verified 26 Oct 2026
+## Live full OpenCV endpoint on AWS EC2 — verified 27 Oct 2026
 - EC2: shelfscan-ec2, i-08fc2ac1d0224790b, t3.micro, eu-north-1, Amazon Linux 2023, running, left running through judging (stop/terminate after 10 Nov 2026).
 - Public endpoint: http://16.171.250.54:8000 — /health and /api/demo, no app sign-in.
 - Docker build test PASSED on EC2: Dockerfile from repo main, exit 0, image shelfscan:latest 399 MB, container Up.
-- Verified from outside AWS (26 Oct 2026, 22:19 GMT): /health 200, OpenCV 5.0.0, model_loaded true; /api/demo 200, Low, changed 0.216, latency 162.1 ms.
+- Verified from outside AWS (26 Oct 2026, 22:19 GMT): /health 200, OpenCV 5.0.0, model_loaded true; /api/demo 200, Low, changed 0.216, latency 162.1 ms; re-verified 27 Oct 2026 05:27 GMT (Low 0.216, product 1).
 - Caveats: security group opens TCP 8000 and 22 to 0.0.0.0/0 for demo only — restrict after judging, especially 22. Free-tier cover through 10 Nov is not confirmed from billing; list price 0.0108 USD/hour, account credits shown $120 at that check, current month $0.00. Muse browser itself refused port 8000 (ERR_CONNECTION_REFUSED) while CloudShell and an outside host returned 200 — cause unproven, judges should try from their own browser.
 - This EC2 endpoint, not the Lambda demo, is the full OpenCV app on AWS. Lambda demo-only endpoint remains as a secondary judge link.
 

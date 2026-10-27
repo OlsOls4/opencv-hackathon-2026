@@ -1,13 +1,13 @@
 # Architecture
 
-Architecture (as deployed for judging): browser -> public Lambda
+Architecture (as deployed for judging): browser -> EC2 full app
+http://16.171.250.54:8000 (FastAPI + OpenCV 5.0.0, single-class product
+model, conf 0.10, /health, /api/demo, /api/frame, /api/upload,
+/api/baseline, dashboard). Secondary link only: public Lambda
 Function URL (eu-north-1, demo-only: GET /health and GET /api/demo only,
-no OpenCV, no webcam, no /api/frame). Full FastAPI + OpenCV 5 app
-(letterbox -> blobFromImage -> YOLO26n ONNX DNN -> tracker -> baseline
-drift) runs locally from this repo only — see "How to run" in README.
-App Runner eu-west-2 was not deployed and is not the judging path;
-the diagram below is a plan, not a deployment, and must be updated to
-the Lambda demo before it is submitted as the deployed architecture.
+no OpenCV, no webcam, no /api/frame). App Runner eu-west-2 was not
+deployed and is not the judging path. Diagram: docs/architecture.svg
+(EC2-first).
 
 Full local pipeline (not on Lambda): browser (getUserMedia webcam,
 canvas -> JPEG ~640px, vanilla JS dashboard, NO inference in browser)
@@ -18,13 +18,15 @@ canvas -> JPEG ~640px, vanilla JS dashboard, NO inference in browser)
      YOLO26n -> forward -> [1,300,6] decode -> clip boxes ->
      IoU/centroid tracker -> rectangle + putText annotation ->
      imencode; snapshot-only GrabCut; session state in-memory only)
-  -> CloudWatch Logs (latency, errors) — local plan only, not Lambda
+  -> Docker logs on the EC2 instance (latency, errors); Lambda demo
+     logs are CloudWatch Logs
   -> S3 (demo images, eval outputs, snapshots/history ONLY if in live path;
      NO live webcam frames by default)
 
-Local-only, NOT on AWS: Olly's machine cv2.VideoCapture(0) demo script
-+ eval photos. GitHub source repo -> App Runner auto-deploy (frozen after
-submission). Devpost submission links repo + live endpoint + video + report.
+Local-only, NOT on AWS: eval photos and training scripts. GitHub source
+repo is the judge-accessible code; EC2 runs a Docker build from it
+(399 MB, container Up). No App Runner auto-deploy. Devpost submission
+links repo + live endpoint + video + report.
 
 Data flow in one sentence: browser captures -> AWS FastAPI receives ->
 OpenCV 5 decodes, letterboxes, runs YOLO26n DNN, tracks, annotates ->

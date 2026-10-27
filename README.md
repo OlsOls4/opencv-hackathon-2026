@@ -97,6 +97,10 @@ Endpoints: `GET /health`, `GET /`, `POST /api/frame`, `POST /api/upload`,
 `/health` is a liveness check only — it reports the local OpenCV
 version and whether a detector has been loaded, it does not prove a
 successful inference until /api/demo also succeeds.
+Dashboard controls: confidence slider 0.05–0.30, default 0.10 (product
+counter only, never COCO); "Set full shelf from a photo" sets the
+baseline with no camera; Reset clears session AND baseline; Gap/Low
+alerts fire only after 5 consecutive frames.
 
 ## Lambda demo code (reproducibility)
 

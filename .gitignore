@@ -6,3 +6,4 @@ __pycache__/
 uploads/
 *.mp4
 models/*.pt
+models/*.onnx
