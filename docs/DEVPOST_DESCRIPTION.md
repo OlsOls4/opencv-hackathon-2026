@@ -1,7 +1,7 @@
 # ShelfScan — improved Devpost description (ready to paste)
 
 > PARENT ONLY — DO NOT PASTE THIS NOTE INTO DEVPOST.
-> Current live link is the v3 video: https://www.youtube.com/watch?v=YMC0FekW6sg
+> Current live link is v4: https://www.youtube.com/watch?v=62QhywyJCFQ
 > Also check before pasting: thumbnail (3:2, JPG/PNG/GIF, max 5 MB),
 > image gallery (dashboard screenshot, drift before/after, architecture
 > diagram), Built With tags, and Try It Out links — none of these can
@@ -25,11 +25,14 @@ B. Open http://16.171.250.54:8000/health — it returns OpenCV 5.0.0.
 C. Open http://16.171.250.54:8000/api/demo — it returns the demo
    shelf state (Low, changed 0.216, re-verified 27 Oct 2026 00:22 GMT).
 
-## Try the full flow (webcam, baseline, restock)
+## Try the full flow (no camera needed)
 
-This requires running the app from the code repository (see "Code"
-below) — it is not a 2-minute hosted webcam demo. Baseline a full
-shelf, watch Full / Low / Gap / Check, restock, re-baseline to Full.
+Try the full flow on EC2, no camera needed: "Try the demo shelf",
+or "Set full shelf from a photo", then upload a later photo to see
+Full / Low / Gap / Check and the 5-frame alert. Live camera needs
+HTTPS or localhost — this EC2 page is HTTP, so the dashboard
+explains that and offers the photo path instead. Repo run is only
+needed for a live webcam.
 
 ## Evidence at a glance — and what to trust it for
 
@@ -79,7 +82,8 @@ lead with counting products. ShelfScan leads with baseline and
 occupancy drift — how much the shelf has changed from its full
 baseline — because a generic product counter cannot reliably name
 packaged goods (see "Evidence, honestly" below). Counting is kept
-secondary, unlabelled, and is never presented as a stock count.
+secondary, single-class "product" only, no brand/SKU, never a stock
+count.
 
 Two camera guards stop the commonest false alarms. A brightness
 guard sends large lighting changes to Check shelf instead of Gap,
@@ -94,12 +98,14 @@ moves will conservatively report Check shelf, not Gap.
   Server-side inference only; nothing runs in the browser.
 - Pipeline: webcam frame → letterbox → YOLO26n ONNX (DNN output
   [1, 300, 6]) → IoU/centroid tracker → baseline drift as the
-  primary shelf-state signal.
+  primary shelf-state signal. Counting uses a separate single-class
+  "product" model; see the technical report §12 for its details.
 - AWS: full app on EC2 (t3.micro, eu-north-1, Docker image built
-  from the repository Dockerfile, 387 MB, build passed on EC2).
+  from the repository Dockerfile, 399 MB, build passed on EC2).
   A Lambda demo-only endpoint is kept as a secondary link only.
-- Tests: 22 passed locally. Pinned dependencies, SHA256-verified
-  model download, reproducible run instructions in the README.
+- Tests: 39 passed locally.
+  Pinned dependencies, SHA256-verified model download,
+  reproducible run instructions in the README.
 
 ## Evidence, honestly
 
@@ -178,9 +184,9 @@ Counting — an estimate, not an exact stock count:
 
 ## What's next
 
-- Fine-tune a shelf product detector on 500–1000 boxed shelf
-  images, with a held-out shelf test set, before claiming
-  counting again.
+- Expand the boxed shelf training set (500–1000 boxed shelf
+  images, with a held-out shelf test set) before claiming
+  counting beyond the current estimate.
 - Add person-occlusion handling so a person reaching for a
   product does not flash Gap.
 - Run a real shop pilot with a fixed camera, a real
@@ -189,8 +195,9 @@ Counting — an estimate, not an exact stock count:
 
 ## Video
 
-Current video (v3, counting + shelf state, 2:41):
-https://www.youtube.com/watch?v=YMC0FekW6sg
+Current video (v4, counting + shelf state, 2:00, no burned-in
+subtitles, natural voice, captions via YouTube):
+https://www.youtube.com/watch?v=62QhywyJCFQ
 Video shows counting as an estimate alongside drift; counting is
 not a stock count.
 

@@ -1,16 +1,11 @@
 # ShelfScan — Technical Report (draft, real before/after drift still pending)
 
-> Status at submission: real-shelf counting on single stills is done
-> (see §7 and §11: COCO n=5, MAE 18.4, bias −16.4, exact 0/5;
-> superseded for counting by the single-class model in §12:
-> n=5, MAE 7.0, predicted 146 / hand 175, exact 0/5); real
-> before/after drift pairs and any shop pilot are still untested, so
-> shelf-impact claims remain unproven. The ≤5-minute demo video
-> (4:22) was recorded after this report's earlier draft and predates
-> the real-shelf numbers in §7/§11 — use this report, not the video,
-> for the latest real-shelf numbers. The only public endpoint is the
-> Lambda demo-only URL above. Judges should verify the full OpenCV
-> app from the repo locally (README "How to run").
+> Status at submission: counting single-class product, n=5, MAE 7.0
+> (§12); drift Gap 0.4864 simulated, single-shelf ROI only; no shop
+> pilot, no physical pair. Demo video v4, 2:00,
+> https://www.youtube.com/watch?v=62QhywyJCFQ. Live full app:
+> http://16.171.250.54:8000 (OpenCV 5.0.0, product model, conf 0.10,
+> slider 0.05–0.30); Lambda link is demo-only, no OpenCV.
 > What is new here is scope and signal hierarchy, not a new algorithm:
 > one fixed ROI, baseline/occupancy drift as primary, generic YOLO
 > counting demoted to secondary because COCO cannot name packaged
@@ -19,7 +14,7 @@
 
 ## Live AWS demo endpoint — demo-only (26 Oct 2026)
 - Live AWS endpoint: https://rhy7elxmanwrtyuqyfw2xg53ji0bnecg.lambda-url.eu-north-1.on.aws/ — AWS Lambda function shelfscan-demo in eu-north-1, via a public Function URL. Only /health and /api/demo are exposed on this endpoint.
-- Demo-only limitation, stated plainly: OpenCV is NOT loaded in the Lambda demo, there is no live webcam or stateful tracking, and there is no /api/frame on Lambda. The full FastAPI app (OpenCV 5.0.0, YOLO26n, confidence 0.35) runs from the repo locally — see "How to run" in README. Do not present the Lambda endpoint as live OpenCV inference.
+- Demo-only limitation, stated plainly: OpenCV is NOT loaded in the Lambda demo, there is no live webcam or stateful tracking, and there is no /api/frame on Lambda. The full FastAPI app (OpenCV 5.0.0, single-class product model, confidence 0.10) runs live on EC2 at http://16.171.250.54:8000 — see "How to run" in README for a local run. Do not present the Lambda endpoint as live OpenCV inference.
 - Reproducibility: the Lambda demo is now reproduced in this repo by `lambda_demo.py` (see `docs/LAMBDA_DEMO.md`) — same /health and /api/demo shapes, stateless, no OpenCV. It is a reproduction of the live endpoint's observed responses, not a byte-for-byte copy of the originally deployed source. /health is a liveness check only — it does not prove OpenCV 5 or YOLO26n loaded in Lambda. No Lambda latency, memory, or cost figure is claimed here, because none has been measured on Lambda; local figures (e.g. /api/demo 163.8 ms) are local only and must not be presented as Lambda figures.
 - Cost, as of 26 Oct 2026: no Lambda cost, billing-alarm, or free-tier usage figure is claimed for the live endpoint, because none has been recorded from Billing after test calls. Lambda compute is expected to sit inside the free tier only if measured usage stays below the account's monthly request and GB-second allowances, shared across all functions in the account and split across the October/November boundary; CloudWatch Logs, ECR storage, and data transfer out are billed separately and are not covered by that statement. The Function URL is public (auth NONE) so judges can open it in a browser — it is shared only in the submission, not promoted publicly, and will be disabled/deleted after judging. No account-credit balance is claimed here.
 - Why eu-north-1: App Runner in eu-west-2 was unavailable (no longer accepting new customers from 30 April 2026) and Lambda eu-west-2 was region-blocked for this new account, hence eu-north-1.
@@ -254,13 +249,19 @@
     how much is there. The product ONNX weights are local only, not
     committed, same rule as the COCO ONNX; models/download_model.py
     fetches the COCO model and the training script is in
-    results/counting_work/train_product.py. Tests: 23 passed (+1
-    product-counter test pinning the 5 counts above).
+    results/counting_work/train_product.py. Tests: 39 passed locally
+    (including 6 dashboard QA tests: photo baseline, slider range,
+    upload conf, reset clears baseline, camera HTTP note).
 
 ## Live full OpenCV endpoint on AWS EC2 — verified 26 Oct 2026
 - EC2: shelfscan-ec2, i-08fc2ac1d0224790b, t3.micro, eu-north-1, Amazon Linux 2023, running, left running through judging (stop/terminate after 10 Nov 2026).
 - Public endpoint: http://16.171.250.54:8000 — /health and /api/demo, no app sign-in.
-- Docker build test PASSED on EC2: Dockerfile from repo main, exit 0, image shelfscan:latest 387 MB, container Up.
+- Docker build test PASSED on EC2: Dockerfile from repo main, exit 0, image shelfscan:latest 399 MB, container Up.
 - Verified from outside AWS (26 Oct 2026, 22:19 GMT): /health 200, OpenCV 5.0.0, model_loaded true; /api/demo 200, Low, changed 0.216, latency 162.1 ms.
 - Caveats: security group opens TCP 8000 and 22 to 0.0.0.0/0 for demo only — restrict after judging, especially 22. Free-tier cover through 10 Nov is not confirmed from billing; list price 0.0108 USD/hour, account credits shown $120 at that check, current month $0.00. Muse browser itself refused port 8000 (ERR_CONNECTION_REFUSED) while CloudShell and an outside host returned 200 — cause unproven, judges should try from their own browser.
 - This EC2 endpoint, not the Lambda demo, is the full OpenCV app on AWS. Lambda demo-only endpoint remains as a secondary judge link.
+
+## Dashboard QA fixes (27 Oct 2026, deployed to EC2)
+- Photo-baseline button added: "Set full shelf from a photo" posts to /api/baseline, so the full journey works with no camera at all — essential on HTTP, where browsers block getUserMedia.
+- Camera on HTTP shows an explanatory note (page is HTTP, not a permission denial), with demo/upload/localhost paths; denied vs no-camera errors now get different messages.
+- Confidence slider corrected to 0.05–0.30, default 0.10 (was 0.25–0.60, default 0.35, silently clamped server-side); upload now respects the slider; reset now clears the baseline.
